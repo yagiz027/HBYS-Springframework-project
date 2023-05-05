@@ -1,0 +1,8 @@
+h1.updateDialogTitle{
+    background-color: blue;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    font-size: large;
+    font-family: 'Times New Roman', Times, serif;
+}
