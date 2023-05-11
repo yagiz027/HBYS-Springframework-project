@@ -23,7 +23,6 @@ public class TakvimView extends VerticalLayout{
     private Button nextButton;
     private DateTimePicker dialogDateTimePicker;
 
-    private LocalDateTime cellDateTime;
     private LocalDateTime currentDateTime;
     private List<String> dayNames;
     private LocalDate startOfWeekDay= LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().getValue()-1);
@@ -147,7 +146,6 @@ public class TakvimView extends VerticalLayout{
         cell.getStyle().set("text-color", "red");
         cell.getStyle().set("cursor", "");
         cell.getElement().getStyle().set("pointer-events", "none");
-        prevButton.setEnabled(false);
     }
 
     private void ifCellSelectedBeforeHtmlEvents(Div cell){
@@ -178,6 +176,8 @@ public class TakvimView extends VerticalLayout{
             startOfWeekDay=startOfWeekDay.minusWeeks(1);
             if(startOfWeekDay.equals(LocalDate.now().minusDays(LocalDate.now().getDayOfWeek().getValue()-1))){
                 prevButton.setEnabled(true);
+            }else if(startOfWeekDay.isBefore(currentDateTime.toLocalDate())){
+                prevButton.setEnabled(false);
             }
             updateCalendar();
         });
@@ -243,13 +243,5 @@ public class TakvimView extends VerticalLayout{
 
     public LocalDateTime clickedEndDateTime(){
         return clickedEndDateTime;
-    }
-
-    public LocalDateTime getCellDateTime() {
-        return cellDateTime;
-    }
-
-    public void setCellDateTime(LocalDateTime cellDateTime) {
-        this.cellDateTime = cellDateTime;
     }
 }
