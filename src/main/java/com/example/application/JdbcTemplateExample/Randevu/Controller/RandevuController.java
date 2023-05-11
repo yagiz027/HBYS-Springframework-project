@@ -19,11 +19,11 @@ public class RandevuController {
         randevu.setRandevuStatu(randevuStatusController(randevu));
         randevuService.addRandevu(randevu);
     }
-    private char randevuStatusController(Randevu randevu) {
+    private String randevuStatusController(Randevu randevu) {
         if(randevu.getRandevuBaslangicTarih().getTime()<randevu.getRandevuBitisTarih().getTime()){
-            return 'T';
+            return "T";
         }else{
-            return 'F';
+            return "F";
         }
     }
 
@@ -50,4 +50,5 @@ public class RandevuController {
     public List<Randevu> findRandevuByStatu(Character randevuStatu){
         return randevuService.findRandevuByStatu(randevuStatu);
     }
+
 }

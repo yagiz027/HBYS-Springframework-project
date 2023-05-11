@@ -166,8 +166,8 @@
     "proj4": "$proj4",
     "@vaadin/tabsheet": "$@vaadin/tabsheet",
     "@vaadin/tooltip": "$@vaadin/tooltip",
-    "@vaadin-component-factory/vcf-nav": "$@vaadin-component-factory/vcf-nav",
-    "@vaadin/overlay": "$@vaadin/overlay"
+    "@vaadin/overlay": "$@vaadin/overlay",
+    "@vaadin-component-factory/vcf-nav": "$@vaadin-component-factory/vcf-nav"
   },
   "vaadin": {
     "dependencies": {

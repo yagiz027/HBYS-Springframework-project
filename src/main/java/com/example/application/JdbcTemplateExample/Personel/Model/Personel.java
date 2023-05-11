@@ -41,7 +41,7 @@ public class Personel {
     private Date personelDogumTarihi;
     
     @Column(name = "personelBolum")
-    private PersonelBolum personelBolum; //Aggregation 
+    private PersonelBolum personelBolum; 
 
     @Column(name="personelKurumId")
     private PersonelKurum personelKurum;

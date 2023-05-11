@@ -19,4 +19,5 @@ public interface RandevuDao {
     List<Randevu> findRandevuByBolumAdı(PersonelBolum randevuBolum);
 
     List<Randevu> findRandevuByStatu(Character randevuStatu);
+
 }

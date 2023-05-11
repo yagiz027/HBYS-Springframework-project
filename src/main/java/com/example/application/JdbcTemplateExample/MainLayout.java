@@ -6,7 +6,7 @@ import org.vaadin.lineawesome.LineAwesomeIcon;
 import com.example.application.JdbcTemplateExample.Hasta.Views.HastaEkleView.hastaEkleView;
 import com.example.application.JdbcTemplateExample.Hasta.Views.HastaListView.hastaListView;
 import com.example.application.JdbcTemplateExample.Personel.Views.PersonelForm.PersonelFormView;
-import com.example.application.JdbcTemplateExample.Randevu.View.RandevuEkranı.RandevuView;
+import com.example.application.JdbcTemplateExample.Randevu.View.RandevuEkrani.RandevuView;
 import com.example.application.components.appnav.AppNav;
 import com.example.application.components.appnav.AppNavItem;
 import com.vaadin.flow.component.applayout.AppLayout;

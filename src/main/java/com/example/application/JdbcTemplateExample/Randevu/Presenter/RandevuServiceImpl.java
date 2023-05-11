@@ -47,7 +47,6 @@ public class RandevuServiceImpl implements RandevuService {
 
     @Override
     public List<Randevu> findRandevuByStatu(Character randevuStatu) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findRandevuByStatu'");
+        return randevuDao.findRandevuByStatu(randevuStatu);
     }
 }

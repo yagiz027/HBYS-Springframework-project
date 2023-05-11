@@ -1,15 +1,16 @@
-package com.example.application.JdbcTemplateExample.Randevu.View.RandevuEkranı;
+package com.example.application.JdbcTemplateExample.Randevu.View.RandevuEkrani;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Scope;
 
 import com.example.application.JdbcTemplateExample.MainLayout;
-import com.example.application.JdbcTemplateExample.ErrorDialog.ErrorDialogView;
+import com.example.application.JdbcTemplateExample.GenericViews.ErrorDialog.ErrorDialogView;
 import com.example.application.JdbcTemplateExample.Hasta.Controller.HastaController;
 import com.example.application.JdbcTemplateExample.Hasta.Controller.HastaKanGrupController;
 import com.example.application.JdbcTemplateExample.Hasta.Model.Hasta;
@@ -21,6 +22,7 @@ import com.example.application.JdbcTemplateExample.Personel.Model.PersonelBolum;
 import com.example.application.JdbcTemplateExample.Personel.Model.PersonelKurum;
 import com.example.application.JdbcTemplateExample.Randevu.Controller.RandevuController;
 import com.example.application.JdbcTemplateExample.Randevu.Model.Randevu;
+import com.example.application.JdbcTemplateExample.Randevu.View.RandevuTakvimEkrani.RandevuDateSelectionView;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -31,6 +33,8 @@ import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.html.Footer;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -51,6 +55,7 @@ import com.vaadin.flow.router.Route;
 public class RandevuView extends HorizontalLayout {
 
     private DateTimePicker randevuBaslangicTarihDatePicker;
+    private DateTimePicker randevuBitisTarihiDatePicker;
 
     private TextField randevuAlanHastaTcTextField;
     private ComboBox<Personel> randevuVerenDoktorComboBox;
@@ -58,6 +63,7 @@ public class RandevuView extends HorizontalLayout {
     private ComboBox<PersonelKurum> randevuKurumComboBox;
 
     private Button randevuKaydetButton;
+    private Button calendarButton;
 
     private TextField findHastaByName;
     private TextField findHastaByTC;
@@ -88,6 +94,8 @@ public class RandevuView extends HorizontalLayout {
 
     private ErrorDialogView errorDialogView;
 
+    private RandevuDateSelectionView randevuDateSelectionView;
+
     public RandevuView(RandevuController randevuController,
             HastaController hastaController, PersonelController personelController,
             PersonelBolumController personelBolumController, PersonelKurumController personelKurumController,
@@ -99,17 +107,15 @@ public class RandevuView extends HorizontalLayout {
         this.personelKurumController = personelKurumController;
         RandevuView.hastaKanGrupController = hastaKanGrupController;
 
-        hastaList = hastaController.findAllHasta();
-
         add(randevuMainVerticalLayout());
         setRandevuOperationFieldsStatus(false);
     }
-
+    
     private VerticalLayout randevuMainVerticalLayout() {
         VerticalLayout aboveGridLayout = new VerticalLayout();
 
         HorizontalLayout filterLayout = new HorizontalLayout();
-
+        
         findHastaByTC = new TextField();
         findHastaByTC.setPlaceholder("Hasta Tc");
         findHastaByTC.setValueChangeMode(ValueChangeMode.EAGER);
@@ -137,8 +143,9 @@ public class RandevuView extends HorizontalLayout {
     private Grid<Hasta> buildHastaGrid() {
         randevuAlanHastaGrid = new Grid<>(Hasta.class, false);
 
-        randevuAlanHastaGrid.setItems(hastaList);
+        hastaList=hastaController.findAllHasta();
 
+        randevuAlanHastaGrid.setItems(hastaList);        
         // Grid Columns Configuration
         randevuAlanHastaGrid.setSelectionMode(SelectionMode.MULTI);
         randevuAlanHastaGrid.addColumn(Hasta::getHastakimlikno).setHeader("Hasta Kimlik NO");
@@ -276,8 +283,8 @@ public class RandevuView extends HorizontalLayout {
         return footerLayout;
     }
 
-    private HorizontalLayout buildBaslangicDateTimePicker() {
-        HorizontalLayout tarihHorizontalLayout = new HorizontalLayout();
+    private VerticalLayout  buildBaslangicDateTimePicker() {
+        HorizontalLayout  randevuBaslangicTarihLayout = new HorizontalLayout();
 
         DatePickerI18n dateFormat = new DatePickerI18n();
         dateFormat.setDateFormat("dd/MM/yyyy");
@@ -289,8 +296,42 @@ public class RandevuView extends HorizontalLayout {
         randevuBaslangicTarihDatePicker.setTimePlaceholder("Saat");
         randevuBaslangicTarihDatePicker.setMin(LocalDateTime.now());
 
-        tarihHorizontalLayout.add(randevuBaslangicTarihDatePicker);
-        return tarihHorizontalLayout;
+        HorizontalLayout randevuBitisTarihLayout=new HorizontalLayout();
+        randevuBitisTarihiDatePicker = new DateTimePicker();
+        randevuBitisTarihiDatePicker.setLabel("Randevu Bitiş Tarihi");
+        randevuBitisTarihiDatePicker.setDatePickerI18n(dateFormat);
+        randevuBitisTarihiDatePicker.setDatePlaceholder("Tarih");
+        randevuBitisTarihiDatePicker.setTimePlaceholder("Saat");
+        randevuBitisTarihiDatePicker.setEnabled(false);
+
+        calendarButton=new Button();
+        calendarButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        calendarButton.setIcon(new Icon(VaadinIcon.CALENDAR));
+        calendarButton.setEnabled(false);
+        randevuVerenDoktorComboBox.addValueChangeListener(selected->{
+            if(selected!=null){
+                calendarButton.setEnabled(true);
+                calendarButton.addClickListener(e->{
+                    randevuDateSelectionView=new RandevuDateSelectionView(randevuController, personelController);
+                    randevuDateSelectionView.open();
+                    randevuBitisTarihLayout.setEnabled(true);
+                    
+                    randevuDateSelectionView.dateTimeConsumer(
+                        start->randevuBaslangicTarihDatePicker.setValue(start),
+                        end-> randevuBitisTarihiDatePicker.setValue(end));
+                });
+            }                
+        });
+
+        randevuBaslangicTarihLayout.setAlignItems(Alignment.BASELINE);
+        randevuBaslangicTarihLayout.add(randevuBaslangicTarihDatePicker, calendarButton);
+
+        randevuBitisTarihLayout.add(randevuBitisTarihiDatePicker);
+
+        VerticalLayout mainTarihOperationsLayout=new VerticalLayout();
+        mainTarihOperationsLayout.add(randevuBaslangicTarihLayout,randevuBitisTarihLayout);
+        
+        return mainTarihOperationsLayout;
     }
 
     private void setRandevuOperationFieldsStatus(Boolean isEnabled) {
@@ -368,12 +409,12 @@ public class RandevuView extends HorizontalLayout {
         randevuBinder.forField(randevuBaslangicTarihDatePicker).asRequired("Lütfen randevu tarihini seçiniz")
                 .withConverter(new LocalDateTimeToDateConverter(ZoneId.systemDefault()))
                 .bind(Randevu::getRandevuBaslangicTarih, Randevu::setRandevuBaslangicTarih);
+        randevuBinder.forField(randevuBitisTarihiDatePicker)
+                .withConverter(new LocalDateTimeToDateConverter(ZoneId.systemDefault()))
+                .bind(Randevu::getRandevuBitisTarih,Randevu::setRandevuBitisTarih);
         randevuBinder.forField(randevuVerenDoktorComboBox).asRequired("Lütfen alınacak doktoru seçiniz.")
                 .bind(Randevu::getRandevuVerenDoktor, Randevu::setRandevuVerenDoktor);
-        randevuBinder.forField(randevuBolumComboBox).asRequired("Lütfen randevu alınacak bölümü seçiniz")
-                .bind(Randevu::getRandevuVerenBolum, Randevu::setRandevuVerenBolum);
-        randevuBinder.forField(randevuKurumComboBox).asRequired("Lütfen randevu alınacak kurumu seçiniz")
-                .bind(Randevu::getRandevuVerenKurum, Randevu::setRandevuVerenKurum);
+
     }
 
     private void saveNewRandevu() {

@@ -19,4 +19,5 @@ public interface RandevuService {
     List<Randevu> findRandevuByBolumAdı(PersonelBolum randevuBolum);
 
     List<Randevu> findRandevuByStatu(Character randevuStatu);
+
 }

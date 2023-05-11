@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.example.application.JdbcTemplateExample.MainLayout;
-import com.example.application.JdbcTemplateExample.ErrorDialog.ErrorDialogView;
+import com.example.application.JdbcTemplateExample.GenericViews.ErrorDialog.ErrorDialogView;
 import com.example.application.JdbcTemplateExample.Hasta.Controller.HastaController;
 import com.example.application.JdbcTemplateExample.Hasta.Controller.HastaKanGrupController;
 import com.example.application.JdbcTemplateExample.Hasta.Model.Hasta;

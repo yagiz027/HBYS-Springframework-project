@@ -2,49 +2,39 @@ package com.example.application.JdbcTemplateExample.Randevu.Dao;
 
 import java.util.List;
 
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.example.application.JdbcTemplateExample.Personel.Model.PersonelBolum;
 import com.example.application.JdbcTemplateExample.Randevu.Model.Randevu;
 
 @Repository
-public class RandevuDaoImpl implements RandevuDao{
+public class RandevuDaoImpl implements RandevuDao {
 
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private JdbcTemplate jdbcTemplate;
 
-    public void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
+    public RandevuDaoImpl(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
     public void addRandevu(Randevu randevu) {
-        String query=""
-        +"INSERT INTO hastarandevu("
-        +"                  randevuBaslangicTarih,"
-        +"                  randevuBitisTarih,"
-        +"                  randevuAlanHastaTC,"
-        +"                  randevuVerenDoktorId,"
-        +"                  randevuTutar,"
-        +"                  randevuStatu)"
-        +"VALUES("     
-        +"                  :randevuBaslangicTarihi,"
-        +"                  :randevuBitisTarih,"
-        +"                  :randevuAlanHasta,"
-        +"                  :randevuVerenDoktor,"
-        +"                  :randevuTutar,"
-        +"                  :randevuStatu);";
+        String query = ""
+                + "INSERT INTO hastarandevu("
+                + "                  randevuBaslangicTarih,"
+                + "                  randevuBitisTarih,"
+                + "                  randevuAlanHastaTC,"
+                + "                  randevuVerenDoktorId,"
+                + "                  randevuStatu) "
+                + "VALUES(?,?,?,?,?);";
 
-        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-        parameterSource.addValue("randevuBaslangicTarihi", randevu.getRandevuBaslangicTarih());
-        parameterSource.addValue("randevuBitisTarih", randevu.getRandevuBitisTarih());
-        parameterSource.addValue("randevuAlanHasta",randevu.getRandevuAlanHasta());
-        parameterSource.addValue("randevuVerenDoktor", randevu.getRandevuVerenDoktor().getPersonelId());
-        parameterSource.addValue("randevuTutar",randevu.getRandevuTutar());
-        parameterSource.addValue("randevuStatu",randevu.getRandevuStatu());
-
-        namedParameterJdbcTemplate.execute(query, parameterSource, ps->ps.executeUpdate());
+        jdbcTemplate.update(query,
+                randevu.getRandevuBaslangicTarih(),
+                randevu.getRandevuBitisTarih(),
+                randevu.getRandevuAlanHasta(),
+                randevu.getRandevuVerenDoktor().getPersonelId(),
+                randevu.getRandevuStatu());
     }
 
     @Override
@@ -67,8 +57,15 @@ public class RandevuDaoImpl implements RandevuDao{
 
     @Override
     public List<Randevu> findAllRandevu() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findAllRandevu'");
+        String query = "SELECT r.* " 
+        +"      FROM hastarandevu r " 
+        +"          INNER JOIN personeljdb p ON r.randevuVerenDoktorId = p.personelId " 
+        +"          INNER JOIN personelbolum pb ON p.personelBolum = pb.bolumId " 
+        +"          INNER JOIN personelkurum pk ON p.personelKurumId = pk.kurumId";
+        
+        List<Randevu> randevuList = jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Randevu.class));
+        
+        return randevuList;
     }
 
     @Override
@@ -82,5 +79,5 @@ public class RandevuDaoImpl implements RandevuDao{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'findRandevuByStatu'");
     }
-    
+
 }

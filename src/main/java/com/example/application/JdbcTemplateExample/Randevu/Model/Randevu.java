@@ -9,8 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.example.application.JdbcTemplateExample.Personel.Model.Personel;
-import com.example.application.JdbcTemplateExample.Personel.Model.PersonelBolum;
-import com.example.application.JdbcTemplateExample.Personel.Model.PersonelKurum;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,15 +38,6 @@ public class Randevu {
     @Column(name = "randevuVerenDoktorId")
     private Personel randevuVerenDoktor;
 
-    @Column(name = "randevuVerenBolumId")
-    private PersonelBolum randevuVerenBolum;
-
-    @Column(name="randevuVerenKurumId")
-    private PersonelKurum randevuVerenKurum;
-
-    @Column(name = "randevuTutar", columnDefinition = "BIGINT")
-    private Float randevuTutar;
-
-    @Column(name = "randevuStatu", columnDefinition = "CHAR")
-    private Character randevuStatu;
+    @Column(name = "randevuStatu", columnDefinition="CHAR")
+    private String randevuStatu;
 }

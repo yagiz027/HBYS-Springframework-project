@@ -26,7 +26,7 @@ public class PersonelServiceImpl implements PersonelService {
 
     @Override
     public List<Personel> getAllPersons() {
-        return personelDao.getAllPersons();
+        return personelDao.getAllPersonels();
     }
 
     @Override

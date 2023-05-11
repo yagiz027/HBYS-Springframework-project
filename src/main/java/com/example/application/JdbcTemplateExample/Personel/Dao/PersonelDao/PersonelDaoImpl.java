@@ -24,7 +24,7 @@ public class PersonelDaoImpl implements PersonelDao {
     }
 
     @Override
-    public void add(Personel person) {
+    public void add(Personel personel) {
         String insertQuery ="INSERT INTO personeljdb("+
                                         "personelAdi,personelSoyadi,personelEmail,"+
                                         "personelPhone,personelDogumTarihi,personelBolum,"+
@@ -35,13 +35,13 @@ public class PersonelDaoImpl implements PersonelDao {
                                         ":personelKurum);";
 
         MapSqlParameterSource parameterSource=new MapSqlParameterSource();
-        parameterSource.addValue("personelAdi", person.getPersonelAdi());
-        parameterSource.addValue("personelSoyadi",person.getPersonelSoyadi());
-        parameterSource.addValue("personelEmail",person.getPersonelEmail());
-        parameterSource.addValue("personelPhone",person.getPersonelPhone());
-        parameterSource.addValue("personelDogumTarihi",person.getPersonelDogumTarihi());
-        parameterSource.addValue("personelBolum",person.getPersonelBolum().getBolumId());
-        parameterSource.addValue("personelKurum",person.getPersonelKurum().getKurumId());
+        parameterSource.addValue("personelAdi", personel.getPersonelAdi());
+        parameterSource.addValue("personelSoyadi",personel.getPersonelSoyadi());
+        parameterSource.addValue("personelEmail",personel.getPersonelEmail());
+        parameterSource.addValue("personelPhone",personel.getPersonelPhone());
+        parameterSource.addValue("personelDogumTarihi",personel.getPersonelDogumTarihi());
+        parameterSource.addValue("personelBolum",personel.getPersonelBolum().getBolumId());
+        parameterSource.addValue("personelKurum",personel.getPersonelKurum().getKurumId());
 
         namedParameterJdbcTemplate.execute(insertQuery, parameterSource,new PreparedStatementCallback<Object>() {
             @Override
@@ -60,7 +60,7 @@ public class PersonelDaoImpl implements PersonelDao {
     }
 
     @Override
-    public void update(Personel person) {
+    public void update(Personel personel) {
         String updateQuery = 
                 "UPDATE personeljdb SET " +
                     "personelAdi=:personelAdi," +
@@ -73,20 +73,20 @@ public class PersonelDaoImpl implements PersonelDao {
                 "WHERE personelId=:personelId";
 
             MapSqlParameterSource parameterSource = new MapSqlParameterSource();
-                parameterSource.addValue("personelAdi", person.getPersonelAdi());
-                parameterSource.addValue("personelSoyadi", person.getPersonelSoyadi());
-                parameterSource.addValue("personelEmail", person.getPersonelEmail());
-                parameterSource.addValue("personelPhone", person.getPersonelPhone());
-                parameterSource.addValue("personelDogumTarihi", person.getPersonelDogumTarihi());
-                parameterSource.addValue("personelBolum", person.getPersonelBolum().getBolumId());
-                parameterSource.addValue("personelKurum", person.getPersonelKurum().getKurumId());
-                parameterSource.addValue("personelId", person.getPersonelId());
+                parameterSource.addValue("personelAdi", personel.getPersonelAdi());
+                parameterSource.addValue("personelSoyadi", personel.getPersonelSoyadi());
+                parameterSource.addValue("personelEmail", personel.getPersonelEmail());
+                parameterSource.addValue("personelPhone", personel.getPersonelPhone());
+                parameterSource.addValue("personelDogumTarihi", personel.getPersonelDogumTarihi());
+                parameterSource.addValue("personelBolum", personel.getPersonelBolum().getBolumId());
+                parameterSource.addValue("personelKurum", personel.getPersonelKurum().getKurumId());
+                parameterSource.addValue("personelId", personel.getPersonelId());
             
         namedParameterJdbcTemplate.update(updateQuery,parameterSource);
     }
 
     @Override
-    public List<Personel> getAllPersons() {
+    public List<Personel> getAllPersonels() {
         String selectAllQuery = "SELECT "+
                                     "p.personelId,"+
                                     "p.personelAdi,"+

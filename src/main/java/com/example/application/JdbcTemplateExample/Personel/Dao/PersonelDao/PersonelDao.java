@@ -11,7 +11,7 @@ public interface PersonelDao {
 
     void update(Personel personel);
 
-    List<Personel> getAllPersons();
+    List<Personel> getAllPersonels();
 
     List<Personel> getPersonelByKurumTuru(String kurumTuru);
 

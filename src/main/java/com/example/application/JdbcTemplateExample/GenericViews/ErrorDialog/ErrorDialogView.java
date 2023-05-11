@@ -1,4 +1,4 @@
-package com.example.application.JdbcTemplateExample.ErrorDialog;
+package com.example.application.JdbcTemplateExample.GenericViews.ErrorDialog;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -9,13 +9,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class ErrorDialogView extends Dialog {
     
-    private Exception errorType;
     private String errorMessage;
     private Label errorLabel;
     private Button closeButton;
 
     public ErrorDialogView(Exception errorType, String errorMessage) {
-        this.errorType=errorType;
         this.errorMessage=errorMessage;
 
         buildErrorDialog();
