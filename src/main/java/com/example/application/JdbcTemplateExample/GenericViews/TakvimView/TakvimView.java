@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.application.JdbcTemplateExample.Personel.Model.Personel;
 import com.example.application.JdbcTemplateExample.Randevu.Model.Randevu;
 import com.example.application.JdbcTemplateExample.ValueConverters.DateToLocalDateUtil;
 import com.vaadin.flow.component.button.Button;
@@ -29,6 +30,8 @@ public class TakvimView extends VerticalLayout{
     private List<Integer> startTimeList = new ArrayList<>();
     private List<Integer> endTimeList = new ArrayList<>();
 
+    private Personel personel;
+
     private Div lastClickedCell=null;
     
     private final int ROWS=12;
@@ -41,9 +44,11 @@ public class TakvimView extends VerticalLayout{
     private VerticalLayout bottomLayout=new VerticalLayout();
     private List<Randevu> randevuList;
 
-    public TakvimView(List<Randevu> randevuList) {
-        this.randevuList=randevuList;
+    private boolean randevuStatu;
 
+    public TakvimView(Personel personel,List<Randevu> randevuList) {
+        this.personel=personel;
+        this.randevuList=randevuList;
         add(topLayout,bottomLayout);
         bottomLayout.setSpacing(false);
         this.setSpacing(false);
@@ -96,7 +101,7 @@ public class TakvimView extends VerticalLayout{
 
                         if(isCellBeforeCurrentDateTime(LocalDateTime.of(startOfWeekDay.plusDays(clickedCol),clickedStartTime))){
                             pastDateHtmlEvents(cell);
-                        }else if(isRandevuExsistInDb(LocalDateTime.of(startOfWeekDay.plusDays(clickedCol),clickedStartTime))==true){
+                        }else if(isRandevuExsistInDb(LocalDateTime.of(startOfWeekDay.plusDays(clickedCol),clickedStartTime),personel,randevuList)==true){
                             ifCellSelectedBeforeHtmlEvents(cell);
                         }else{
                             cellMouseEvents(cell);
@@ -197,14 +202,18 @@ public class TakvimView extends VerticalLayout{
         topLayout.add(aboveGridLayout);
     }
 
-    private boolean isRandevuExsistInDb(LocalDateTime cellDateTime){
+    private boolean isRandevuExsistInDb(LocalDateTime cellDateTime,Personel selectedPersonel,List<Randevu> randevuList){
+        this.personel=selectedPersonel;
+        this.randevuList=randevuList;
+        List<LocalDateTime> possibleSelecteDateTimes=new ArrayList<LocalDateTime>();
         for(Randevu randevu:randevuList){
-            LocalDateTime baslangicLocalDateTime=DateToLocalDateUtil.convertDateToLocalDate(randevu.getRandevuBaslangicTarih());
-            if(randevuList.stream().anyMatch(r->baslangicLocalDateTime.isEqual(cellDateTime))){
-                return true;
-            }
+            possibleSelecteDateTimes.add(DateToLocalDateUtil.convertDateToLocalDate(randevu.getRandevuBaslangicTarih()));
         }
-        return false;
+        return randevuList.stream()
+                          .filter(randevu->randevu.getRandevuVerenDoktor().getPersonelId()==personel.getPersonelId())
+                          .filter(randevu->possibleSelecteDateTimes.stream().anyMatch(dt->dt.isEqual(cellDateTime)))
+                          .findAny()
+                          .isPresent();
     }
 
     private void updateCalendar(){
@@ -243,5 +252,11 @@ public class TakvimView extends VerticalLayout{
 
     public LocalDateTime clickedEndDateTime(){
         return clickedEndDateTime;
+    }
+
+    //This method represents the calendar randevu(appointment) status for the selected personel.
+    public boolean calendarRandevuStatu(boolean randevuStatu){
+        this.randevuStatu=randevuStatu;
+        return this.randevuStatu;
     }
 }

@@ -1,4 +1,4 @@
-package com.example.application.JdbcTemplateExample.Hasta.HastaRowMapper;
+package com.example.application.JdbcTemplateExample.Hasta.HastaRowMappers;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

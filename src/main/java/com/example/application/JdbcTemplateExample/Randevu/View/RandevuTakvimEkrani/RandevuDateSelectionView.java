@@ -1,6 +1,7 @@
 package com.example.application.JdbcTemplateExample.Randevu.View.RandevuTakvimEkrani;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -27,7 +28,7 @@ public class RandevuDateSelectionView extends Dialog{
     private Randevu randevu;
     private Personel personel;
 
-    private List<Randevu> randevuList;
+    private List<Randevu> randevuList=new ArrayList<>();
 
     private Button randevuTarihKaydetBtn;
     private TakvimView randevuTakvimView;
@@ -38,11 +39,13 @@ public class RandevuDateSelectionView extends Dialog{
     private Consumer<LocalDateTime> localStartDateTimeConsumer;
     private Consumer<LocalDateTime> localEndDateTimeConsumer;
     
-    public RandevuDateSelectionView(RandevuController randevuController, PersonelController personelController){
+    
+    public RandevuDateSelectionView(RandevuController randevuController, PersonelController personelController,Personel selectedPersonel){
         this.randevuController=randevuController;
         this.personelController=personelController;
-        
-        randevuList=randevuController.findAllRandevu();
+        this.personel=selectedPersonel;
+
+        this.randevuList=randevuController.findAllRandevu();
         add(takvimLayout);
 
         buildRandevuTakvimView();
@@ -51,8 +54,10 @@ public class RandevuDateSelectionView extends Dialog{
         this.localStartDateTimeConsumer=startDateTimeConsumer;
         this.localEndDateTimeConsumer=endDateTimeConsumer;
     }
+
     private VerticalLayout buildRandevuTakvimView(){
-        randevuTakvimView=new TakvimView(randevuList);
+        randevuTakvimView=new TakvimView(personel,randevuList);
+    
         randevuTarihKaydetBtn=new Button("Randevu Tarihi Kaydet");
         randevuTarihKaydetBtn.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 

@@ -26,14 +26,14 @@ public class Randevu {
     @Column(name = "randevuId")
     private Long randevuId;
 
-    @Column(name = "randeBaslangicTarih", columnDefinition = "DATETIME")
+    @Column(name = "randevuBaslangicTarih", columnDefinition = "DATETIME")
     private Date randevuBaslangicTarih;
 
     @Column(name = "randevuBitisTarih", columnDefinition = "DATETIME")
     private Date randevuBitisTarih;
 
     @Column(name = "randevuAlanHastaTC", columnDefinition = "BIGINT")
-    private String randevuAlanHasta;
+    private String randevuAlanHastaTC;
 
     @Column(name = "randevuVerenDoktorId")
     private Personel randevuVerenDoktor;

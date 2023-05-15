@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.application.JdbcTemplateExample.Personel.Model.PersonelBolum;
 import com.example.application.JdbcTemplateExample.Randevu.Model.Randevu;
+import com.example.application.JdbcTemplateExample.Randevu.RandevuRowMapper.RandevuRowMapper;
 
 @Repository
 public class RandevuDaoImpl implements RandevuDao {
@@ -32,7 +33,7 @@ public class RandevuDaoImpl implements RandevuDao {
         jdbcTemplate.update(query,
                 randevu.getRandevuBaslangicTarih(),
                 randevu.getRandevuBitisTarih(),
-                randevu.getRandevuAlanHasta(),
+                randevu.getRandevuAlanHastaTC(),
                 randevu.getRandevuVerenDoktor().getPersonelId(),
                 randevu.getRandevuStatu());
     }
@@ -57,13 +58,15 @@ public class RandevuDaoImpl implements RandevuDao {
 
     @Override
     public List<Randevu> findAllRandevu() {
-        String query = "SELECT r.* " 
+        String query = "SELECT r.*,p.*,pb.*,pk.*" 
         +"      FROM hastarandevu r " 
         +"          INNER JOIN personeljdb p ON r.randevuVerenDoktorId = p.personelId " 
         +"          INNER JOIN personelbolum pb ON p.personelBolum = pb.bolumId " 
-        +"          INNER JOIN personelkurum pk ON p.personelKurumId = pk.kurumId";
+        +"          INNER JOIN personelkurum pk ON p.personelKurumId = pk.kurumId"
+        +"      WHERE r.randevuVerenDoktorId IS NOT NULL;";
+
         
-        List<Randevu> randevuList = jdbcTemplate.query(query, new BeanPropertyRowMapper<>(Randevu.class));
+        List<Randevu> randevuList = jdbcTemplate.query(query, new RandevuRowMapper());
         
         return randevuList;
     }

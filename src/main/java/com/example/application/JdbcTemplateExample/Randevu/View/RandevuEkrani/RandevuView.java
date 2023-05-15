@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import org.springframework.context.annotation.Scope;
@@ -110,7 +109,7 @@ public class RandevuView extends HorizontalLayout {
         add(randevuMainVerticalLayout());
         setRandevuOperationFieldsStatus(false);
     }
-    
+
     private VerticalLayout randevuMainVerticalLayout() {
         VerticalLayout aboveGridLayout = new VerticalLayout();
 
@@ -312,7 +311,7 @@ public class RandevuView extends HorizontalLayout {
             if(selected!=null){
                 calendarButton.setEnabled(true);
                 calendarButton.addClickListener(e->{
-                    randevuDateSelectionView=new RandevuDateSelectionView(randevuController, personelController);
+                    randevuDateSelectionView=new RandevuDateSelectionView(randevuController, personelController,selected.getValue());
                     randevuDateSelectionView.open();
                     randevuBitisTarihLayout.setEnabled(true);
                     
@@ -405,7 +404,7 @@ public class RandevuView extends HorizontalLayout {
 
         randevuBinder.forField(randevuAlanHastaTcTextField)
                 .asRequired("Lütfen randevusu alınacak hastayı listeden seçiniz")
-                .bind(Randevu::getRandevuAlanHasta, Randevu::setRandevuAlanHasta);
+                .bind(Randevu::getRandevuAlanHastaTC, Randevu::setRandevuAlanHastaTC);
         randevuBinder.forField(randevuBaslangicTarihDatePicker).asRequired("Lütfen randevu tarihini seçiniz")
                 .withConverter(new LocalDateTimeToDateConverter(ZoneId.systemDefault()))
                 .bind(Randevu::getRandevuBaslangicTarih, Randevu::setRandevuBaslangicTarih);

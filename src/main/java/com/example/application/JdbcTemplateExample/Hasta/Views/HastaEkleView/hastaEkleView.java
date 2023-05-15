@@ -14,6 +14,7 @@ import com.example.application.JdbcTemplateExample.Hasta.Controller.HastaControl
 import com.example.application.JdbcTemplateExample.Hasta.Controller.HastaKanGrupController;
 import com.example.application.JdbcTemplateExample.Hasta.Model.Hasta;
 import com.example.application.JdbcTemplateExample.Hasta.Model.HastaKanGrup;
+import com.example.application.JdbcTemplateExample.ValueConverters.StringToLongConverterForId;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -148,23 +149,12 @@ public class hastaEkleView extends HorizontalLayout {
         add(contentHastView2);
     }
 
-    private StringToLongConverter CustomConverter() {
-        StringToLongConverter idConverter = new StringToLongConverter("Lütfen sayısal bir değer giriniz.") {
-            protected java.text.NumberFormat getFormat(Locale hastaID) {
-                NumberFormat format = super.getFormat(hastaID);
-                format.setGroupingUsed(false);
-                return format;
-            }
-        };
-        return idConverter;
-    }
-
     public void initHastaBinder() {
         hastaBinder = new BeanValidationBinder<>(Hasta.class);
 
         hastaBinder.forField(hastaIdField)
                 .withValidator(hastaIdField -> isValid() == true, "Lütfen geçerli bir TC Kimlik numarası giriniz.",ErrorLevel.CRITICAL)
-                .withConverter(CustomConverter()).asRequired("Tc alanı boş olamaz")
+                .withConverter(StringToLongConverterForId.CustomConverter()).asRequired("Tc alanı boş olamaz")
                 .bind(Hasta::getHastakimlikno, Hasta::setHastakimlikno);
         hastaBinder.forField(hastaFirstNameTextField).asRequired("Hasta Adı alanı boş olamaz")
                 .bind(Hasta::getHastafirstName, Hasta::setHastafirstName);
