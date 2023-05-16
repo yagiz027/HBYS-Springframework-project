@@ -197,7 +197,7 @@ public class PersonelFormView extends Div {
         findPersonelByKurumTuruList.addValueChangeListener(e->{
             personelGrid.setItems(personelList.stream()
                             .filter(p->p.getPersonelKurum().getKurumTuruId()
-                                .contains(e.getValue().getKurumTuruId())).toList());
+                                .contains(e.getValue().getKurumturuId())).toList());
         });
 
         findPersonelByBolumList.addValueChangeListener(e->{

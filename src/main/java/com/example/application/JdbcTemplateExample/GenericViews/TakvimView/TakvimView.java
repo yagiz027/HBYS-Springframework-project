@@ -8,9 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters.LocalDateConverter;
-
-import com.example.application.JdbcTemplateExample.Hasta.Model.Hasta;
+import com.example.application.JdbcTemplateExample.GenericViews.ErrorDialog.ErrorDialogView;
 import com.example.application.JdbcTemplateExample.Personel.Model.Personel;
 import com.example.application.JdbcTemplateExample.Randevu.Model.Randevu;
 import com.example.application.JdbcTemplateExample.ValueConverters.DateToLocalDateUtil;
@@ -47,6 +45,7 @@ public class TakvimView extends VerticalLayout {
     private HorizontalLayout topLayout = new HorizontalLayout();
     private VerticalLayout bottomLayout = new VerticalLayout();
     private List<Randevu> randevuList;
+    private ErrorDialogView errorDialogView;
 
     private boolean randevuStatu;
 

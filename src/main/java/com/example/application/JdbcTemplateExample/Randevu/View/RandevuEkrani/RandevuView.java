@@ -1,6 +1,5 @@
 package com.example.application.JdbcTemplateExample.Randevu.View.RandevuEkrani;
 
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Set;
@@ -295,7 +294,7 @@ public class RandevuView extends HorizontalLayout {
         randevuBaslangicTarihDatePicker.setDatePickerI18n(dateFormat);
         randevuBaslangicTarihDatePicker.setDatePlaceholder("Tarih");
         randevuBaslangicTarihDatePicker.setTimePlaceholder("Saat");
-        randevuBaslangicTarihDatePicker.setMin(LocalDateTime.now());
+        randevuBaslangicTarihDatePicker.setEnabled(false);
 
         HorizontalLayout randevuBitisTarihLayout = new HorizontalLayout();
         randevuBitisTarihiDatePicker = new DateTimePicker();

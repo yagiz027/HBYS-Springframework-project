@@ -7,4 +7,6 @@ import com.example.application.JdbcTemplateExample.Personel.Model.PersonelKurumT
 public interface PersonelKurumTuruDao {
 
     List<PersonelKurumTuru> getPersonelKurumTuruList();
+
+    PersonelKurumTuru getPersonelKurumTuruById(String KurumTuruId);
 }

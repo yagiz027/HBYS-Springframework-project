@@ -16,27 +16,14 @@ public class PersonelKurumTuruServiceImpl implements PersonelKurumTuruService {
     private PersonelKurumTuruDao personelKurumTuruDao;
 
     @Override
-    public void add(PersonelKurumTuru kurumTuru) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'add'");
-    }
-
-    @Override
-    public void delete(PersonelKurumTuru kurumTuru) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'delete'");
-    }
-
-    @Override
-    public void update(PersonelKurumTuru kurumTuru) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'update'");
-    }
-
-    @Override
     @Transactional
     public List<PersonelKurumTuru> getPersonelKurumTuruList() {
         return personelKurumTuruDao.getPersonelKurumTuruList();
+    }
+
+    @Override
+    public PersonelKurumTuru getPersonelKurumTuruById(String kurumTuruId) {
+        return personelKurumTuruDao.getPersonelKurumTuruById(kurumTuruId);
     }
     
 }

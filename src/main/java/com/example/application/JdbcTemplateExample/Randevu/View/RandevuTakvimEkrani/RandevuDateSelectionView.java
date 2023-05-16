@@ -72,21 +72,27 @@ public class RandevuDateSelectionView extends Dialog {
             LocalDateTime clickedStartDateTime = randevuTakvimView.getClickedStartDateTime();
             LocalDateTime clickedEndDateTime = randevuTakvimView.getClickedEndDateTime();
 
-            if (clickedStartDateTime == null || clickedEndDateTime == null) {
-                errorDialogView = new ErrorDialogView(new Exception(), "Lütfen geçerli bir randevu tarihi seçiniz.");
-            } else if (isSameDaySamePaitient(clickedStartDateTime.toLocalDate(), selectedHastaTc)) {
+            if (isSameDaySamePaitient(clickedStartDateTime.toLocalDate(), selectedHastaTc)) {
                 errorDialogView = new ErrorDialogView(new Exception(),
                         "Aynı gün içerisinde yalnızca bir randevu alabilirsiniz.");
+            } else {
+                if (clickedStartDateTime == null || clickedEndDateTime == null) {
+                    errorDialogView = new ErrorDialogView(new Exception(),
+                            "Lütfen geçerli bir randevu tarihi seçiniz.");
+                }
+                localStartDateTimeConsumer.accept(clickedStartDateTime);
+                localEndDateTimeConsumer.accept(clickedEndDateTime);
             }
-            localStartDateTimeConsumer.accept(clickedStartDateTime);
-            localEndDateTimeConsumer.accept(clickedEndDateTime);
+            close();
         });
         return takvimLayout;
     }
 
     private boolean isSameDaySamePaitient(LocalDate rowDate, String hastaTc) {
-         return randevuList.stream().filter(r -> r.getRandevuAlanHastaTC() == hastaTc)
+        boolean result = randevuList.stream()
+                .filter(r -> r.getRandevuAlanHastaTC() == hastaTc)
                 .filter(r -> DateToLocalDateUtil.convertDateToLocalDate(r.getRandevuBaslangicTarih()) == rowDate)
                 .findAny().isPresent();
+        return result;
     }
 }

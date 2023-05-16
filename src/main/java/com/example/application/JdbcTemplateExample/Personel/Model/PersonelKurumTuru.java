@@ -17,8 +17,8 @@ import lombok.Setter;
 public class PersonelKurumTuru {
     @Id
     @Column(name = "kurumturuId")
-    private String kurumTuruId;
+    private String kurumturuId;
     
-    @Column(name = "kurumAdi")
+    @Column(name = "kurumTuruAd")
     private String kurumTuruAd;
 }

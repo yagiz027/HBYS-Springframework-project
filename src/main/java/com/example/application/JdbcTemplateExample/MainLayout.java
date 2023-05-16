@@ -7,6 +7,7 @@ import com.example.application.JdbcTemplateExample.Hasta.Views.HastaEkleView.has
 import com.example.application.JdbcTemplateExample.Hasta.Views.HastaListView.hastaListView;
 import com.example.application.JdbcTemplateExample.Personel.Views.PersonelForm.PersonelFormView;
 import com.example.application.JdbcTemplateExample.Randevu.View.RandevuEkrani.RandevuView;
+import com.example.application.JdbcTemplateExample.Randevu.View.RandevuListView.RandevuListView;
 import com.example.application.components.appnav.AppNav;
 import com.example.application.components.appnav.AppNavItem;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -63,6 +64,7 @@ public class MainLayout extends AppLayout {
         nav.addItem(new AppNavItem("Hasta Ekle",hastaEkleView.class,LineAwesomeIcon.PLUS_SOLID.create()));
         nav.addItem(new AppNavItem("Hasta Listesi",hastaListView.class));
         nav.addItem(new AppNavItem("Randevu Ekle",RandevuView.class,new Icon(VaadinIcon.CALENDAR)));
+        nav.addItem(new AppNavItem("Randevu Listesi",RandevuListView.class,new Icon(VaadinIcon.LIST)));
 
         return nav;
     }

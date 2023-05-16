@@ -12,7 +12,7 @@ public class PersonelKurumTuruRowMapper implements RowMapper<PersonelKurumTuru>{
     @Override
     public PersonelKurumTuru mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new PersonelKurumTuru(
-            rs.getString("kurumTuruId"),
+            rs.getString("kurumturuId"),
             rs.getString("kurumTuruAd"));
     }    
 }

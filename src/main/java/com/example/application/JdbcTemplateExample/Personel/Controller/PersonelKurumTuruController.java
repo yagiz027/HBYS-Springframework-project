@@ -16,4 +16,8 @@ public class PersonelKurumTuruController {
     public List<PersonelKurumTuru> getPersonelKurumTuruList(){
         return personelKurumTuruService.getPersonelKurumTuruList();
     }
+
+    public PersonelKurumTuru getPersonelKurumTuruById(String personelKurumTuruId){
+        return personelKurumTuruService.getPersonelKurumTuruById(personelKurumTuruId);
+    }
 }
