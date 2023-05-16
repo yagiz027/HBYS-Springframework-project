@@ -34,6 +34,7 @@ import com.vaadin.flow.component.grid.Grid.SelectionMode;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -114,7 +115,7 @@ public class RandevuView extends HorizontalLayout {
         VerticalLayout aboveGridLayout = new VerticalLayout();
 
         HorizontalLayout filterLayout = new HorizontalLayout();
-        
+
         findHastaByTC = new TextField();
         findHastaByTC.setPlaceholder("Hasta Tc");
         findHastaByTC.setValueChangeMode(ValueChangeMode.EAGER);
@@ -142,9 +143,9 @@ public class RandevuView extends HorizontalLayout {
     private Grid<Hasta> buildHastaGrid() {
         randevuAlanHastaGrid = new Grid<>(Hasta.class, false);
 
-        hastaList=hastaController.findAllHasta();
+        hastaList = hastaController.findAllHasta();
 
-        randevuAlanHastaGrid.setItems(hastaList);        
+        randevuAlanHastaGrid.setItems(hastaList);
         // Grid Columns Configuration
         randevuAlanHastaGrid.setSelectionMode(SelectionMode.MULTI);
         randevuAlanHastaGrid.addColumn(Hasta::getHastakimlikno).setHeader("Hasta Kimlik NO");
@@ -248,7 +249,7 @@ public class RandevuView extends HorizontalLayout {
                 randevuVerenDoktorComboBox.setItemLabelGenerator(p -> p.getPersonelAdi() + " " + p.getPersonelSoyadi());
 
                 randevuBaslangicTarihDatePicker.setEnabled(true);
-            } 
+            }
         });
         randevuAlOperationFormLayout.setWidthFull();
         randevuAlOperationFormLayout.setHeight("auto");
@@ -259,7 +260,7 @@ public class RandevuView extends HorizontalLayout {
                 randevuKurumComboBox,
                 randevuVerenDoktorComboBox,
                 buildBaslangicDateTimePicker(),
-                //Time selection list
+                // Time selection list
                 buildRandevuKaydetButtonlayout());
 
         return randevuAlOperationFormLayout;
@@ -272,6 +273,7 @@ public class RandevuView extends HorizontalLayout {
         // Add a new Randevu:
         randevuKaydetButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         randevuKaydetButton.addClickListener(e -> {
+            Notification.show("Randevunuz başarılı bir şekilde kaydedildi.");
             saveNewRandevu();
         });
         buttonFooter.add(randevuKaydetButton);
@@ -282,8 +284,8 @@ public class RandevuView extends HorizontalLayout {
         return footerLayout;
     }
 
-    private VerticalLayout  buildBaslangicDateTimePicker() {
-        HorizontalLayout  randevuBaslangicTarihLayout = new HorizontalLayout();
+    private VerticalLayout buildBaslangicDateTimePicker() {
+        HorizontalLayout randevuBaslangicTarihLayout = new HorizontalLayout();
 
         DatePickerI18n dateFormat = new DatePickerI18n();
         dateFormat.setDateFormat("dd/MM/yyyy");
@@ -295,7 +297,7 @@ public class RandevuView extends HorizontalLayout {
         randevuBaslangicTarihDatePicker.setTimePlaceholder("Saat");
         randevuBaslangicTarihDatePicker.setMin(LocalDateTime.now());
 
-        HorizontalLayout randevuBitisTarihLayout=new HorizontalLayout();
+        HorizontalLayout randevuBitisTarihLayout = new HorizontalLayout();
         randevuBitisTarihiDatePicker = new DateTimePicker();
         randevuBitisTarihiDatePicker.setLabel("Randevu Bitiş Tarihi");
         randevuBitisTarihiDatePicker.setDatePickerI18n(dateFormat);
@@ -303,23 +305,25 @@ public class RandevuView extends HorizontalLayout {
         randevuBitisTarihiDatePicker.setTimePlaceholder("Saat");
         randevuBitisTarihiDatePicker.setEnabled(false);
 
-        calendarButton=new Button();
+        calendarButton = new Button();
         calendarButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         calendarButton.setIcon(new Icon(VaadinIcon.CALENDAR));
         calendarButton.setEnabled(false);
-        randevuVerenDoktorComboBox.addValueChangeListener(selected->{
-            if(selected!=null){
+        randevuVerenDoktorComboBox.addValueChangeListener(selected -> {
+            if (selected != null) {
                 calendarButton.setEnabled(true);
-                calendarButton.addClickListener(e->{
-                    randevuDateSelectionView=new RandevuDateSelectionView(randevuController, personelController,selected.getValue());
+                calendarButton.addClickListener(e -> {
+                    randevuDateSelectionView = new RandevuDateSelectionView(randevuController, personelController,
+                            selected.getValue(),
+                            randevuAlanHastaTcTextField.getValue());
                     randevuDateSelectionView.open();
                     randevuBitisTarihLayout.setEnabled(true);
-                    
+
                     randevuDateSelectionView.dateTimeConsumer(
-                        start->randevuBaslangicTarihDatePicker.setValue(start),
-                        end-> randevuBitisTarihiDatePicker.setValue(end));
+                            start -> randevuBaslangicTarihDatePicker.setValue(start),
+                            end -> randevuBitisTarihiDatePicker.setValue(end));
                 });
-            }                
+            }
         });
 
         randevuBaslangicTarihLayout.setAlignItems(Alignment.BASELINE);
@@ -327,9 +331,9 @@ public class RandevuView extends HorizontalLayout {
 
         randevuBitisTarihLayout.add(randevuBitisTarihiDatePicker);
 
-        VerticalLayout mainTarihOperationsLayout=new VerticalLayout();
-        mainTarihOperationsLayout.add(randevuBaslangicTarihLayout,randevuBitisTarihLayout);
-        
+        VerticalLayout mainTarihOperationsLayout = new VerticalLayout();
+        mainTarihOperationsLayout.add(randevuBaslangicTarihLayout, randevuBitisTarihLayout);
+
         return mainTarihOperationsLayout;
     }
 
@@ -395,7 +399,8 @@ public class RandevuView extends HorizontalLayout {
             hastaDogumTarih.setValue("Doğum Tarihi: " + hasta.getHastaDogumTarihi().toString());
             hastaCinsiyet.setValue("Cinsiyet: " + hasta.getHastaGender());
             hastaYas.setValue("Yaş: " + hasta.getHastaAge());
-            hastaKanGrubu.setValue("Kan Grubu: " + hastaKanGrupController.getKanGrup(hasta.getHastaKanGrup()).getKanGrup());
+            hastaKanGrubu
+                    .setValue("Kan Grubu: " + hastaKanGrupController.getKanGrup(hasta.getHastaKanGrup()).getKanGrup());
         }
     }
 
@@ -410,7 +415,7 @@ public class RandevuView extends HorizontalLayout {
                 .bind(Randevu::getRandevuBaslangicTarih, Randevu::setRandevuBaslangicTarih);
         randevuBinder.forField(randevuBitisTarihiDatePicker)
                 .withConverter(new LocalDateTimeToDateConverter(ZoneId.systemDefault()))
-                .bind(Randevu::getRandevuBitisTarih,Randevu::setRandevuBitisTarih);
+                .bind(Randevu::getRandevuBitisTarih, Randevu::setRandevuBitisTarih);
         randevuBinder.forField(randevuVerenDoktorComboBox).asRequired("Lütfen alınacak doktoru seçiniz.")
                 .bind(Randevu::getRandevuVerenDoktor, Randevu::setRandevuVerenDoktor);
 

@@ -1,8 +1,6 @@
 package com.example.application.JdbcTemplateExample.Hasta.Views.HastaEkleView;
 
-import java.text.NumberFormat;
 import java.time.ZoneId;
-import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -31,7 +29,6 @@ import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ErrorLevel;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.LocalDateToDateConverter;
-import com.vaadin.flow.data.converter.StringToLongConverter;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;

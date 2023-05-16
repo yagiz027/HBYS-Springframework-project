@@ -2,7 +2,6 @@ package com.example.application.JdbcTemplateExample.Randevu.Dao;
 
 import java.util.List;
 
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 

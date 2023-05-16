@@ -1,11 +1,9 @@
 package com.example.application.JdbcTemplateExample.ValueConverters;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 
 public class DateToLocalDateUtil {
     private Date date;
@@ -14,11 +12,11 @@ public class DateToLocalDateUtil {
         this.date=date;
     }
 
-    public static LocalDateTime convertDateToLocalDate(Date date){
-        Calendar calendar = new GregorianCalendar();
-        calendar.setTime(date);
-        Instant instant = calendar.toInstant();
-        LocalDateTime localDateTime = instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
-        return localDateTime;
+    public static LocalDateTime convertDateToLocalDateTime(Date date) {
+        return LocalDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
+    }
+
+    public static LocalDate convertDateToLocalDate(Date date){
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 }
