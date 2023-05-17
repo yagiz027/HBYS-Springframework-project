@@ -33,10 +33,10 @@ public class Randevu {
     private Date randevuBitisTarih;
 
     @Column(name = "randevuAlanHastaTC", columnDefinition = "BIGINT")
-    private String randevuAlanHastaTC;
+    private String randevuAlanHastaTC; //Softer Efficient 
 
     @Column(name = "randevuVerenDoktorId")
-    private Personel randevuVerenDoktor;
+    private Personel randevuVerenDoktor; //Aggregation 
 
     @Column(name = "randevuStatu", columnDefinition="CHAR")
     private String randevuStatu;

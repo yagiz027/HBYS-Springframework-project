@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.example.application.SpringUtils;
 import com.example.application.JdbcTemplateExample.MainLayout;
 import com.example.application.JdbcTemplateExample.Personel.Controller.PersonelBolumController;
 import com.example.application.JdbcTemplateExample.Personel.Controller.PersonelController;
@@ -19,7 +18,6 @@ import com.example.application.JdbcTemplateExample.Personel.Model.PersonelBolum;
 import com.example.application.JdbcTemplateExample.Personel.Model.PersonelKurum;
 import com.example.application.JdbcTemplateExample.Personel.Model.PersonelKurumTuru;
 import com.example.application.JdbcTemplateExample.Personel.Views.updatePersonelView.updatePersonelView;
-import com.example.application.JdbcTemplateExample.WebPageDialog.webPageDialog;
 import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -54,9 +52,6 @@ import jakarta.annotation.PostConstruct;
 @Uses(Icon.class)
 public class PersonelFormView extends Div {
     @Autowired
-    private SpringUtils springUtils;
-
-    @Autowired
     private PersonelController personelController;
 
     @Autowired
@@ -69,7 +64,6 @@ public class PersonelFormView extends Div {
     private PersonelKurumTuruController personelKurumTuruController;
 
     private updatePersonelView updateView;
-    private webPageDialog pageDialog;
 
     private Personel personel = new Personel();
 
@@ -120,9 +114,6 @@ public class PersonelFormView extends Div {
         save = new Button("Personel Kaydet");
         goToPage = new Button("Got To WebPage");
 
-        goToPage.addClickListener(e -> {
-            addWebPage();
-        });
 
         save.addClickListener(e -> addNewPerson());
         save.addClickShortcut(com.vaadin.flow.component.Key.ENTER);
@@ -278,10 +269,5 @@ public class PersonelFormView extends Div {
 
     private void reloadPersonList() {
         personelGrid.setItems(personelController.findAllPerson());
-    }
-
-    private void addWebPage() {
-        pageDialog = springUtils.getBean(webPageDialog.class);
-        pageDialog.open();
     }
 }

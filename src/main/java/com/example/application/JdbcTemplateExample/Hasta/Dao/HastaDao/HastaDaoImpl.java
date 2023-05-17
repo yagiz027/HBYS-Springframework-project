@@ -160,8 +160,13 @@ public class HastaDaoImpl implements HastaDao {
 
     @Override
     public Hasta getHastaById(Long id) {
-        String findQuery = "Select hasta.hasta_jdb from hasta_jdb hasta" +
-                " where hasta_jdb.hastakimlikno=" + id + ";";
+        String findQuery =""
+                        +"  SELECT h.*,"
+                        +"      k.kanid,"
+                        +"      k.kan_grup"
+                        +"  FROM hasta_jdb h"
+                        +"       INNER JOIN kan k on k.kanid=h.fkHastaKanId"
+                        +"  WHERE h.hastakimlikno=" + id + ";";
                 
         Map<String,Object> params=new HashMap<>();
         params.put("hastakimlikno",id);
