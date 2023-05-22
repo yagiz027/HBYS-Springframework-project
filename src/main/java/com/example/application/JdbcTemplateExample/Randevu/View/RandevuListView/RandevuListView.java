@@ -121,7 +121,7 @@ public class RandevuListView extends VerticalLayout {
         randevuHastaTCAra.setPlaceholder("Hasta TC Giriniz");
         randevuHastaTCAra.addValueChangeListener(h -> {
             String hastaTc = h.getValue();
-            dataProvider.addFilter(r -> r.getRandevuAlanHastaTC().contains(hastaTc));
+            dataProvider.addFilter(r -> hastaTc==null ? null : r.getRandevuAlanHastaTC().contains(hastaTc));
         });
 
         randevuBolumAra = new ComboBox<>();
@@ -131,7 +131,7 @@ public class RandevuListView extends VerticalLayout {
         randevuBolumAra.setItems(personelBolumController.getPersonelBolumList());
         randevuBolumAra.addValueChangeListener(p -> {
             PersonelBolum selectedBolum = p.getValue();
-            dataProvider.addFilter(r -> r.getRandevuVerenDoktor().getPersonelBolum().getPersonelBolumAdi()
+            dataProvider.addFilter(r -> selectedBolum==null ? null : r.getRandevuVerenDoktor().getPersonelBolum().getPersonelBolumAdi()
                     .contains(selectedBolum.getPersonelBolumAdi()));
         });
 
@@ -142,7 +142,7 @@ public class RandevuListView extends VerticalLayout {
         randevuKurumAra.setItems(personelKurumController.getPersonelKurumList());
         randevuKurumAra.addValueChangeListener(k -> {
             PersonelKurum selectedKurum = k.getValue();
-            dataProvider.addFilter(r -> r.getRandevuVerenDoktor().getPersonelKurum().getKurumAdi()
+            dataProvider.addFilter(r ->r.getRandevuVerenDoktor().getPersonelKurum().getKurumAdi()
                     .contains(selectedKurum != null ? selectedKurum.getKurumAdi() : null));
         });
 
@@ -151,9 +151,10 @@ public class RandevuListView extends VerticalLayout {
         randevuKurumTuruGroup.setItemLabelGenerator(PersonelKurumTuru::getKurumTuruAd);
         randevuKurumTuruGroup.setItems(personelKurumTuruController.getPersonelKurumTuruList());
         randevuKurumTuruGroup.addValueChangeListener(kt -> {
+            dataProvider.clearFilters();
             PersonelKurumTuru selectedKurumTuru = kt.getValue();
             if (kt != null) {
-                dataProvider.addFilter(r -> personelKurumTuruController
+                dataProvider.addFilter(r ->selectedKurumTuru==null ? null : personelKurumTuruController
                         .getPersonelKurumTuruById(r.getRandevuVerenDoktor().getPersonelKurum().getKurumTuruId())
                         .getKurumTuruAd().contains(selectedKurumTuru.getKurumTuruAd()));
             }
@@ -226,6 +227,13 @@ public class RandevuListView extends VerticalLayout {
 
     private void clearFields() {
         dataProvider.clearFilters();
+        
+        randevuBolumAra.clear();
+        randevuKurumAra.clear();
+        randevuHastaAra.clear();
+        randevuHastaTCAra.clear();
+        randevuKurumTuruGroup.clear();
+
         randevuGrid.setItems(randevuList);
     }
 }

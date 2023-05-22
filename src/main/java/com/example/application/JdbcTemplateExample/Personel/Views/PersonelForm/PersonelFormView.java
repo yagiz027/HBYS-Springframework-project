@@ -2,9 +2,7 @@ package com.example.application.JdbcTemplateExample.Personel.Views.PersonelForm;
 
 import java.time.ZoneId;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -25,11 +23,9 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.EmailField;
@@ -38,29 +34,21 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.LocalDateToDateConverter;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-
-import jakarta.annotation.PostConstruct;
 
 @Component
 @PageTitle("Personel Kontrol Ekranı")
 @Route(value = "", layout = MainLayout.class)
 @Scope("prototype")
 @Uses(Icon.class)
-public class PersonelFormView extends Div {
-    @Autowired
+public class PersonelFormView extends VerticalLayout {
     private PersonelController personelController;
-
-    @Autowired
     private PersonelBolumController personelBolumController;
-
-    @Autowired
     private PersonelKurumController personelKurumController;
-
-    @Autowired
     private PersonelKurumTuruController personelKurumTuruController;
 
     private updatePersonelView updateView;
@@ -81,15 +69,28 @@ public class PersonelFormView extends Div {
 
     private Button cancel;
     private Button save;
-    private Button goToPage;
     private Button clearFilterButton;
 
     private Grid<Personel> personelGrid = new Grid<>(Personel.class, false);
 
     private Binder<Personel> binder;
 
-    @PostConstruct
-    public void init() {
+    private ListDataProvider<Personel> dataProvider;
+    private List<Personel> personelList;
+
+    private HorizontalLayout gridOperationsLayout = new HorizontalLayout();
+
+    public PersonelFormView(PersonelController personelController, PersonelBolumController personelBolumController,
+            PersonelKurumController personelKurumController, PersonelKurumTuruController personelKurumTuruController) {
+        this.personelController = personelController;
+        this.personelBolumController = personelBolumController;
+        this.personelKurumController = personelKurumController;
+        this.personelKurumTuruController = personelKurumTuruController;
+
+        personelList = personelController.findAllPerson();
+        personelGrid.setItems(personelList);
+        dataProvider = (ListDataProvider<Personel>) personelGrid.getDataProvider();
+
         add(buildUI(), GridUI());
         initBinder();
         reloadPersonList();
@@ -106,24 +107,24 @@ public class PersonelFormView extends Div {
         personelBolumList.setItems(personelBolumController.getPersonelBolumList());
         personelBolumList.setItemLabelGenerator(PersonelBolum::getPersonelBolumAdi);
 
-        personelKurumList=new ComboBox<>("Personel Kurum Seçiniz");
+        personelKurumList = new ComboBox<>("Personel Kurum Seçiniz");
         personelKurumList.setItems(personelKurumController.getPersonelKurumList());
         personelKurumList.setItemLabelGenerator(PersonelKurum::getKurumAdi);
 
         cancel = new Button("İptal");
         save = new Button("Personel Kaydet");
-        goToPage = new Button("Got To WebPage");
-
 
         save.addClickListener(e -> addNewPerson());
         save.addClickShortcut(com.vaadin.flow.component.Key.ENTER);
 
-        HorizontalLayout buttonsLayout=new HorizontalLayout(save, cancel, goToPage);
+        HorizontalLayout buttonsLayout = new HorizontalLayout(save, cancel);
         buttonsLayout.setDefaultVerticalComponentAlignment(Alignment.END);
         Footer buttonsFooter = new Footer(buttonsLayout);
 
-        VerticalLayout personOptionsLayout2 = new VerticalLayout(personelDogumTarihi, personelPhone, personelBolumList,personelKurumList);
-        VerticalLayout personOptionsLayout = new VerticalLayout(personelAdi, personelSoyadi, personelEmail, buttonsFooter);
+        VerticalLayout personOptionsLayout2 = new VerticalLayout(personelDogumTarihi, personelPhone, personelBolumList,
+                personelKurumList);
+        VerticalLayout personOptionsLayout = new VerticalLayout(personelAdi, personelSoyadi, personelEmail,
+                buttonsFooter);
 
         HorizontalLayout personOptionsMainLayout = new HorizontalLayout(personOptionsLayout, personOptionsLayout2);
 
@@ -140,66 +141,18 @@ public class PersonelFormView extends Div {
         }
     }
 
-    private VerticalLayout GridUI() {  
-        findPersonelByKurumTuruList=new ComboBox<>();
-        findPersonelByKurumTuruList.setItems(personelKurumTuruController.getPersonelKurumTuruList());
-        findPersonelByKurumTuruList.setItemLabelGenerator(PersonelKurumTuru::getKurumTuruAd);
-
-        findPersonelByBolumList=new ComboBox<>();
-        findPersonelByBolumList.setItems(personelBolumController.getPersonelBolumList());
-        findPersonelByBolumList.setItemLabelGenerator(PersonelBolum::getPersonelBolumAdi);
-
+    private VerticalLayout GridUI() {
         personelGrid.setClassName("personGrid");
         personelGrid.addColumn(Personel::getPersonelAdi).setHeader("Personel Adı");
         personelGrid.addColumn(Personel::getPersonelSoyadi).setHeader("Personel Soyadı");
         personelGrid.addColumn(Personel::getPersonelEmail).setHeader("Personel Email");
         personelGrid.addColumn(Personel::getPersonelDogumTarihi).setHeader("Personel Doğum Tarihi");
         personelGrid.addColumn(Personel::getPersonelPhone).setHeader("Personel Telefon");
-        personelGrid.addColumn(p->personelBolumController.getPersonelBolumById(p.getPersonelBolum().getBolumId()).getPersonelBolumAdi()).setHeader("Personel Bölümü");
-        personelGrid.addColumn(k->personelKurumController.getKurumByPersonelKurumId(k.getPersonelKurum().getKurumId()).getKurumAdi()).setHeader("Personel Kurumu");
-        
-        findPerson=new TextField("Personel Ara");
-        findPerson.setPlaceholder("Personel Adı/Soyadı Giriniz");
-        findPerson.setWidth(300, Unit.PIXELS);
-        findPerson.setClassName("findPersonelTxtField");
-
-        List<Personel> personelList=personelController.findAllPerson();
-        personelGrid.setItems(personelList);
-
-        findPerson.setValueChangeMode(ValueChangeMode.EAGER);
-        findPerson.addValueChangeListener(e -> {
-            if (e.getValue() == null) {
-                reloadPersonList();
-            } else {
-                personelGrid.setItems(personelList.stream()
-                .filter(p-> p.getPersonelAdi().contains(e.getValue()))
-                .collect(Collectors.toList()));
-            }
-        });
-        
-        findPersonelByKurumTuruList.setLabel("Kurum Türüne Göre Sırala");
-        findPersonelByKurumTuruList.setPlaceholder("Kurum Türü Seçiniz");
-        findPersonelByKurumTuruList.setWidth(300, Unit.PIXELS);
-
-        findPersonelByBolumList.setLabel("Personel Bölümüne Göre Sırala");
-        findPersonelByBolumList.setPlaceholder("Personel Bölümü Seçiniz");
-        findPersonelByBolumList.setWidth(300, Unit.PIXELS);
-
-        findPersonelByKurumTuruList.addValueChangeListener(e->{
-            personelGrid.setItems(personelList.stream()
-                            .filter(p->p.getPersonelKurum().getKurumTuruId()
-                                .contains(e.getValue().getKurumturuId())).toList());
-        });
-
-        findPersonelByBolumList.addValueChangeListener(e->{
-            personelGrid.setItems(personelList.stream()
-                    .filter(p->p.getPersonelBolum().getPersonelBolumAdi()
-                        .contains(e.getValue().getPersonelBolumAdi())).toList());
-        });
-
-        clearFilterButton=new Button();
-        clearFilterButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        clearFilterButton.setIcon(new Icon("lumo","cross"));
+        personelGrid.addColumn(p -> personelBolumController.getPersonelBolumById(p.getPersonelBolum().getBolumId())
+                .getPersonelBolumAdi()).setHeader("Personel Bölümü");
+        personelGrid.addColumn(
+                k -> personelKurumController.getKurumByPersonelKurumId(k.getPersonelKurum().getKurumId()).getKurumAdi())
+                .setHeader("Personel Kurumu");
 
         personelGrid.addColumn(new ComponentRenderer<>(Button::new, (button, person) -> {
             button.addThemeVariants(ButtonVariant.LUMO_ICON,
@@ -216,7 +169,7 @@ public class PersonelFormView extends Div {
             if (e.getValue() == null) {
                 updateView.close();
             } else {
-                updateView=new updatePersonelView(personelBolumController,personelKurumController);
+                updateView = new updatePersonelView(personelBolumController, personelKurumController);
 
                 updateView.setPersonel(e.getValue());
 
@@ -227,16 +180,74 @@ public class PersonelFormView extends Div {
                 saveUptatedPerson(personel);
             }
         });
-        HorizontalLayout gridOperations=new HorizontalLayout(findPerson,findPersonelByBolumList,findPersonelByKurumTuruList,clearFilterButton);
-        gridOperations.setDefaultVerticalComponentAlignment(Alignment.END);
-        VerticalLayout personGridLayout = new VerticalLayout(gridOperations,personelGrid);
+
+        VerticalLayout personGridLayout = new VerticalLayout(buildGridOperationsLayout(), personelGrid);
         return personGridLayout;
+    }
+
+    private HorizontalLayout buildGridOperationsLayout() {
+
+        findPersonelByKurumTuruList = new ComboBox<>();
+        findPersonelByKurumTuruList.setItems(personelKurumTuruController.getPersonelKurumTuruList());
+        findPersonelByKurumTuruList.setItemLabelGenerator(PersonelKurumTuru::getKurumTuruAd);
+
+        findPersonelByBolumList = new ComboBox<>();
+        findPersonelByBolumList.setItems(personelBolumController.getPersonelBolumList());
+        findPersonelByBolumList.setItemLabelGenerator(PersonelBolum::getPersonelBolumAdi);
+
+        findPersonelByKurumTuruList.setLabel("Kurum Türüne Göre Sırala");
+        findPersonelByKurumTuruList.setPlaceholder("Kurum Türü Seçiniz");
+        findPersonelByKurumTuruList.setWidth(300, Unit.PIXELS);
+
+        findPersonelByBolumList.setLabel("Personel Bölümüne Göre Sırala");
+        findPersonelByBolumList.setPlaceholder("Personel Bölümü Seçiniz");
+        findPersonelByBolumList.setWidth(300, Unit.PIXELS);
+
+        findPerson = new TextField("Personel Ara");
+        findPerson.setPlaceholder("Personel Adı/Soyadı Giriniz");
+        findPerson.setWidth(300, Unit.PIXELS);
+        findPerson.setClassName("findPersonelTxtField");
+
+        clearFilterButton = new Button();
+        clearFilterButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        clearFilterButton.setIcon(new Icon("lumo", "cross"));
+        clearFilterButton.addClickListener(r -> dataProvider.clearFilters());
+
+        findPerson.setValueChangeMode(ValueChangeMode.EAGER);
+        findPerson.addValueChangeListener(e -> {
+            if (e.getValue() == null) {
+                reloadPersonList();
+            } else {
+                dataProvider.addFilter(p -> p.getPersonelAdi().toLowerCase().contains(e.getValue().toLowerCase())
+                        || p.getPersonelSoyadi().toLowerCase().contains(e.getValue().toLowerCase()));
+            }
+        });
+
+        findPersonelByKurumTuruList.addValueChangeListener(e -> {
+            PersonelKurumTuru selectedKurumTuru = e.getValue();
+            dataProvider.addFilter(p -> selectedKurumTuru == null ? null
+                    : personelKurumTuruController.getPersonelKurumTuruById(p.getPersonelKurum().getKurumTuruId())
+                            .getKurumTuruAd().equals(selectedKurumTuru.getKurumTuruAd()));
+        });
+
+        findPersonelByBolumList.addValueChangeListener(e -> {
+            PersonelBolum selectedBolum=e.getValue();
+            dataProvider.addFilter(
+                    p -> p.getPersonelBolum().getPersonelBolumAdi().equals(selectedBolum.getPersonelBolumAdi()));
+        });
+
+        gridOperationsLayout.add(findPerson, findPersonelByBolumList, findPersonelByKurumTuruList, clearFilterButton);
+        gridOperationsLayout.setDefaultVerticalComponentAlignment(Alignment.END);
+
+        return gridOperationsLayout;
     }
 
     public void saveUptatedPerson(Personel person) {
         updateView.updatePersonConsumer(pe -> {
-            personelController.updatePerson(new Personel(pe.getPersonelId(), pe.getPersonelAdi(), pe.getPersonelSoyadi(),
-                    pe.getPersonelEmail(), pe.getPersonelPhone(), pe.getPersonelDogumTarihi(), pe.getPersonelBolum(),pe.getPersonelKurum()));
+            personelController
+                    .updatePerson(new Personel(pe.getPersonelId(), pe.getPersonelAdi(), pe.getPersonelSoyadi(),
+                            pe.getPersonelEmail(), pe.getPersonelPhone(), pe.getPersonelDogumTarihi(),
+                            pe.getPersonelBolum(), pe.getPersonelKurum()));
             reloadPersonList();
             updateView.close();
         });
@@ -257,9 +268,9 @@ public class PersonelFormView extends Div {
         binder.forField(personelPhone).asRequired("Bu alan boş olamaz")
                 .bind(Personel::getPersonelPhone, Personel::setPersonelPhone);
         binder.forField(personelBolumList).asRequired("Bu alan boş olanaz")
-                .bind(Personel::getPersonelBolum,Personel::setPersonelBolum);
+                .bind(Personel::getPersonelBolum, Personel::setPersonelBolum);
         binder.forField(personelKurumList).asRequired("Lütfen personel kurumu seçiniz.")
-                .bind(Personel::getPersonelKurum,Personel::setPersonelKurum);
+                .bind(Personel::getPersonelKurum, Personel::setPersonelKurum);
     }
 
     private void deletePerson(Personel person) {
