@@ -28,33 +28,33 @@ public class HastaDaoImpl implements HastaDao {
     @Override
     public void addHasta(Hasta hasta) {
         String insertQuery = ""
-        + "INSERT INTO hasta_jdb( "
-        + "         hastakimlikno, "
-        + "         hastafirstName, "
-        + "         hastaLastName, "
-        + "         hastaEmail, "
-        + "         hastaTelefon, "
-        + "         hastaAdres, "
-        + "         educationStatus, "
-        + "         hastaDogumTarihi, "
-        + "         hastaGender, "
-        + "         fkHastaKanId, "
-        + "         hastaAge) "
-        + "     VALUES( "
-        + "        :hastakimlikno, "
-        + "        :hastafirstName, "
-        + "        :hastaLastName, "
-        + "        :hastaEmail, "
-        + "        :hastaTelefon, "
-        + "        :hastaAdres, "
-        + "        :educationStatus, "
-        + "        :hastaDogumTarihi, "
-        + "        :hastaGender, "
-        + "        :hastaKanGrup, "
-        + "        hastaAge=YEAR(CURDATE()) - "
-        + "             YEAR(:hastaDogumTarihi) - IF(STR_TO_DATE(CONCAT(YEAR(CURDATE()), '-', "
-        + "             MONTH(:hastaDogumTarihi), '-', "
-        + "             DAY(:hastaDogumTarihi)), '%Y-%c-%e') > CURDATE(), 1, 0));";
+                + "INSERT INTO hasta_jdb( "
+                + "         hastakimlikno, "
+                + "         hastafirstName, "
+                + "         hastaLastName, "
+                + "         hastaEmail, "
+                + "         hastaTelefon, "
+                + "         hastaAdres, "
+                + "         educationStatus, "
+                + "         hastaDogumTarihi, "
+                + "         hastaGender, "
+                + "         fkHastaKanId, "
+                + "         hastaAge) "
+                + "     VALUES( "
+                + "        :hastakimlikno, "
+                + "        :hastafirstName, "
+                + "        :hastaLastName, "
+                + "        :hastaEmail, "
+                + "        :hastaTelefon, "
+                + "        :hastaAdres, "
+                + "        :educationStatus, "
+                + "        :hastaDogumTarihi, "
+                + "        :hastaGender, "
+                + "        :hastaKanGrup, "
+                + "        hastaAge=YEAR(CURDATE()) - "
+                + "             YEAR(:hastaDogumTarihi) - IF(STR_TO_DATE(CONCAT(YEAR(CURDATE()), '-', "
+                + "             MONTH(:hastaDogumTarihi), '-', "
+                + "             DAY(:hastaDogumTarihi)), '%Y-%c-%e') > CURDATE(), 1, 0));";
 
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("hastakimlikno", hasta.getHastakimlikno());
@@ -72,9 +72,9 @@ public class HastaDaoImpl implements HastaDao {
         namedParameterJdbcTemplate.execute(insertQuery, map, new PreparedStatementCallback<Object>() {
             @Override
             public Object doInPreparedStatement(PreparedStatement ps) throws SQLException, DataAccessException {
-                try{
+                try {
                     return ps.executeUpdate();
-                }catch(SQLException exception){
+                } catch (SQLException exception) {
                     return exception;
                 }
             }
@@ -83,9 +83,8 @@ public class HastaDaoImpl implements HastaDao {
 
     @Override
     public void deleteHasta(Long hastakimlikno) {
-        String deleteQuery =
-                            "DELETE FROM hasta_jdb "+
-                            "WHERE hasta_jdb.hastakimlikno=:hastakimlikno;";
+        String deleteQuery = "DELETE FROM hasta_jdb " +
+                "WHERE hasta_jdb.hastakimlikno=:hastakimlikno;";
 
         SqlParameterSource parameterSource = new MapSqlParameterSource("hastakimlikno", Long.valueOf(hastakimlikno));
         namedParameterJdbcTemplate.update(deleteQuery, parameterSource);
@@ -94,35 +93,35 @@ public class HastaDaoImpl implements HastaDao {
     @Override
     public void updateHasta(Hasta hasta) {
         String updateQuery = ""
-        + "UPDATE hastaotomasyon.hasta_jdb h SET "
-        + "				   h.hastafirstName=:hastafirstName, "
-        + "				   h.hastaLastName=:hastaLastName, "
-        + "				   h.hastaEmail=:hastaEmail, "
-        + "                h.hastaTelefon=:hastaTelefon, " 
-        + "                h.hastaAdres=:hastaAdres, "
-        + "                h.educationStatus=:educationStatus, "
-        + "                h.hastaDogumTarihi=:hastaDogumTarihi, "
-        + "                h.hastaGender=:hastaGender, "
-        + "                h.fkHastaKanId=:hastaKanGrup, "
-        + "                h.hastaAge= "
-        + "                     (YEAR(CURDATE()) - YEAR(:hastaDogumTarihi) - "
-        + "                         IF(STR_TO_DATE( "
-        + "							    CONCAT(YEAR(CURDATE()), '-', MONTH(:hastaDogumTarihi), '-', "
-        + "                                 DAY(:hastaDogumTarihi)), '%Y-%c-%e') > CURDATE(), 1, 0)) "
-        + "WHERE h.hastakimlikno=:hastakimlikno;";
-        MapSqlParameterSource parameterSource=new MapSqlParameterSource();
+                + "UPDATE hastaotomasyon.hasta_jdb h SET "
+                + "				   h.hastafirstName=:hastafirstName, "
+                + "				   h.hastaLastName=:hastaLastName, "
+                + "				   h.hastaEmail=:hastaEmail, "
+                + "                h.hastaTelefon=:hastaTelefon, "
+                + "                h.hastaAdres=:hastaAdres, "
+                + "                h.educationStatus=:educationStatus, "
+                + "                h.hastaDogumTarihi=:hastaDogumTarihi, "
+                + "                h.hastaGender=:hastaGender, "
+                + "                h.fkHastaKanId=:hastaKanGrup, "
+                + "                h.hastaAge= "
+                + "                     (YEAR(CURDATE()) - YEAR(:hastaDogumTarihi) - "
+                + "                         IF(STR_TO_DATE( "
+                + "							    CONCAT(YEAR(CURDATE()), '-', MONTH(:hastaDogumTarihi), '-', "
+                + "                                 DAY(:hastaDogumTarihi)), '%Y-%c-%e') > CURDATE(), 1, 0)) "
+                + "WHERE h.hastakimlikno=:hastakimlikno;";
+        MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource.addValue("hastakimlikno", hasta.getHastakimlikno());
         parameterSource.addValue("hastafirstName", hasta.getHastafirstName());
-        parameterSource.addValue("hastaLastName",hasta.getHastaLastName());
-        parameterSource.addValue("hastaEmail",hasta.getHastaEmail());
-        parameterSource.addValue("hastaTelefon",hasta.getHastaTelefon());
-        parameterSource.addValue("hastaAdres",hasta.getHastaAdres());
-        parameterSource.addValue("educationStatus",hasta.getEducationStatus());
-        parameterSource.addValue("hastaDogumTarihi",hasta.getHastaDogumTarihi());
-        parameterSource.addValue("hastaGender",hasta.getHastaGender());
-        parameterSource.addValue("hastaKanGrup",hasta.getHastaKanGrup().getKanid());
+        parameterSource.addValue("hastaLastName", hasta.getHastaLastName());
+        parameterSource.addValue("hastaEmail", hasta.getHastaEmail());
+        parameterSource.addValue("hastaTelefon", hasta.getHastaTelefon());
+        parameterSource.addValue("hastaAdres", hasta.getHastaAdres());
+        parameterSource.addValue("educationStatus", hasta.getEducationStatus());
+        parameterSource.addValue("hastaDogumTarihi", hasta.getHastaDogumTarihi());
+        parameterSource.addValue("hastaGender", hasta.getHastaGender());
+        parameterSource.addValue("hastaKanGrup", hasta.getHastaKanGrup().getKanid());
         parameterSource.addValue("hastaAge", hasta.getHastaAge());
-    
+
         namedParameterJdbcTemplate.update(updateQuery, parameterSource);
     }
 
@@ -137,7 +136,7 @@ public class HastaDaoImpl implements HastaDao {
 
     @Override
     public List<Hasta> getAllHasta() {
-        String getAllQuery= ""
+        String getAllQuery = ""
                 + "SELECT "
                 + "     h.hastakimlikno, "
                 + "     h.hastafirstName, "
@@ -154,36 +153,36 @@ public class HastaDaoImpl implements HastaDao {
                 + "     h.hastaAge "
                 + "FROM hastaotomasyon.hasta_jdb h, hastaotomasyon.kan k "
                 + "WHERE h.fkHastaKanId=k.kanid;";
-        
-        return namedParameterJdbcTemplate.query(getAllQuery,new HastaRowMapper());
+
+        return namedParameterJdbcTemplate.query(getAllQuery, new HastaRowMapper());
     }
 
     @Override
     public Hasta getHastaById(Long id) {
-        String findQuery =""
-                        +"  SELECT h.*,"
-                        +"      k.kanid,"
-                        +"      k.kan_grup"
-                        +"  FROM hasta_jdb h"
-                        +"       INNER JOIN kan k on k.kanid=h.fkHastaKanId"
-                        +"  WHERE h.hastakimlikno=" + id + ";";
-                
-        Map<String,Object> params=new HashMap<>();
-        params.put("hastakimlikno",id);
+        String findQuery = ""
+                + "  SELECT h.*,"
+                + "      k.kanid,"
+                + "      k.kan_grup"
+                + "  FROM hasta_jdb h"
+                + "       INNER JOIN kan k on k.kanid=h.fkHastaKanId"
+                + "  WHERE h.hastakimlikno=" + id + ";";
 
-        return namedParameterJdbcTemplate.queryForObject(findQuery,params,new HastaRowMapper());
+        Map<String, Object> params = new HashMap<>();
+        params.put("hastakimlikno", id);
+
+        return namedParameterJdbcTemplate.queryForObject(findQuery, params, new HastaRowMapper());
     }
 
     @Override
     public boolean isUnique(Long hastakimlikno) {
-        String query=""
-            +"  SELECT COUNT(*)"
-            +"  FROM hasta_jdb h "
-            +"  WHERE h.hastakimlikno =:hastakimlikno;";
+        String query = ""
+                + "  SELECT COUNT(*)"
+                + "  FROM hasta_jdb h "
+                + "  WHERE h.hastakimlikno =:hastakimlikno;";
 
-            Map<String,Object> params = new HashMap<>();
-            params.put("hastakimlikno",hastakimlikno);
-        int count=namedParameterJdbcTemplate.queryForObject(query,params,Integer.class);
-        return count==0;
+        Map<String, Object> params = new HashMap<>();
+        params.put("hastakimlikno", hastakimlikno);
+        int count = namedParameterJdbcTemplate.queryForObject(query, params, Integer.class);
+        return count == 0;
     }
 }
