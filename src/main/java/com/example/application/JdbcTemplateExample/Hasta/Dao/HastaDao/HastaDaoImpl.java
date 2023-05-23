@@ -86,7 +86,7 @@ public class HastaDaoImpl implements HastaDao {
         String deleteQuery = "DELETE FROM hasta_jdb " +
                 "WHERE hasta_jdb.hastakimlikno=:hastakimlikno;";
 
-        SqlParameterSource parameterSource = new MapSqlParameterSource("hastakimlikno", Long.valueOf(hastakimlikno));
+        SqlParameterSource parameterSource = new MapSqlParameterSource("hastakimlikno", hastakimlikno);
         namedParameterJdbcTemplate.update(deleteQuery, parameterSource);
     }
 

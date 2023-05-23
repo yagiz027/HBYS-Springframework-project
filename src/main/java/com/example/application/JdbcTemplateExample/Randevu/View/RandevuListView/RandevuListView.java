@@ -113,6 +113,7 @@ public class RandevuListView extends VerticalLayout {
                 return hastaFirstName.toLowerCase().contains(hastaTempName.toLowerCase())
                         || hastaLastName.toLowerCase().contains(hastaTempName.toLowerCase());
             });
+            dataProvider.refreshAll();
         });
         randevuHastaTCAra = new TextField();
         randevuHastaTCAra.setValueChangeMode(ValueChangeMode.EAGER);
@@ -122,6 +123,7 @@ public class RandevuListView extends VerticalLayout {
         randevuHastaTCAra.addValueChangeListener(h -> {
             String hastaTc = h.getValue();
             dataProvider.addFilter(r -> hastaTc==null ? null : r.getRandevuAlanHastaTC().contains(hastaTc));
+            dataProvider.refreshAll();
         });
 
         randevuBolumAra = new ComboBox<>();
@@ -133,6 +135,7 @@ public class RandevuListView extends VerticalLayout {
             PersonelBolum selectedBolum = p.getValue();
             dataProvider.addFilter(r -> selectedBolum==null ? null : r.getRandevuVerenDoktor().getPersonelBolum().getPersonelBolumAdi()
                     .contains(selectedBolum.getPersonelBolumAdi()));
+            dataProvider.refreshAll();
         });
 
         randevuKurumAra = new ComboBox<>();
@@ -144,6 +147,7 @@ public class RandevuListView extends VerticalLayout {
             PersonelKurum selectedKurum = k.getValue();
             dataProvider.addFilter(r ->r.getRandevuVerenDoktor().getPersonelKurum().getKurumAdi()
                     .contains(selectedKurum != null ? selectedKurum.getKurumAdi() : null));
+            dataProvider.refreshAll();
         });
 
         randevuKurumTuruGroup = new RadioButtonGroup<>();
@@ -154,9 +158,10 @@ public class RandevuListView extends VerticalLayout {
             dataProvider.clearFilters();
             PersonelKurumTuru selectedKurumTuru = kt.getValue();
             if (kt != null) {
-                dataProvider.addFilter(r ->selectedKurumTuru==null ? null : personelKurumTuruController
+                dataProvider.addFilter(r -> personelKurumTuruController
                         .getPersonelKurumTuruById(r.getRandevuVerenDoktor().getPersonelKurum().getKurumTuruId())
                         .getKurumTuruAd().contains(selectedKurumTuru.getKurumTuruAd()));
+                dataProvider.refreshAll();
             }
         });
         clearFiltersButton = new Button();

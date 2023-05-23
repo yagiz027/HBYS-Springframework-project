@@ -203,8 +203,8 @@ public class AppNavItem extends Component {
             router = VaadinService.getCurrent().getRouter();
         }
         if (router == null) {
-            throw new IllegalStateException("Implicit router instance is not available. "
-                    + "Use overloaded method with explicit router parameter.");
+            // throw new IllegalStateException("Implicit router instance is not available. "
+            //         + "Use overloaded method with explicit router parameter.");
         }
         return router;
     }

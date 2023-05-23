@@ -4,9 +4,12 @@ import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.context.annotation.Scope;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Component;
 
 import com.example.application.JdbcTemplateExample.MainLayout;
+import com.example.application.JdbcTemplateExample.GenericViews.DeleteDataConfirmView.DeleteConfirmView;
+import com.example.application.JdbcTemplateExample.GenericViews.ErrorDialog.ErrorDialogView;
 import com.example.application.JdbcTemplateExample.Personel.Controller.PersonelBolumController;
 import com.example.application.JdbcTemplateExample.Personel.Controller.PersonelController;
 import com.example.application.JdbcTemplateExample.Personel.Controller.PersonelKurumController;
@@ -23,6 +26,7 @@ import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dependency.Uses;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.dataview.GridListDataView;
 import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -34,7 +38,6 @@ import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.LocalDateToDateConverter;
-import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.PageTitle;
@@ -75,10 +78,13 @@ public class PersonelFormView extends VerticalLayout {
 
     private Binder<Personel> binder;
 
-    private ListDataProvider<Personel> dataProvider;
     private List<Personel> personelList;
+    private GridListDataView<Personel> dataView;
 
     private HorizontalLayout gridOperationsLayout = new HorizontalLayout();
+
+    private DeleteConfirmView deleteConfirmView;
+    private ErrorDialogView errorDialogView;
 
     public PersonelFormView(PersonelController personelController, PersonelBolumController personelBolumController,
             PersonelKurumController personelKurumController, PersonelKurumTuruController personelKurumTuruController) {
@@ -87,13 +93,15 @@ public class PersonelFormView extends VerticalLayout {
         this.personelKurumController = personelKurumController;
         this.personelKurumTuruController = personelKurumTuruController;
 
+        
         personelList = personelController.findAllPerson();
         personelGrid.setItems(personelList);
-        dataProvider = (ListDataProvider<Personel>) personelGrid.getDataProvider();
-
+        dataView=personelGrid.getListDataView();
+        
         add(buildUI(), GridUI());
         initBinder();
         reloadPersonList();
+        
     }
 
     public HorizontalLayout buildUI() {
@@ -143,8 +151,8 @@ public class PersonelFormView extends VerticalLayout {
 
     private VerticalLayout GridUI() {
         personelGrid.setClassName("personGrid");
-        personelGrid.addColumn(Personel::getPersonelAdi).setHeader("Personel Adı");
-        personelGrid.addColumn(Personel::getPersonelSoyadi).setHeader("Personel Soyadı");
+        personelGrid.addColumn(Personel::getPersonelAdi).setHeader("Personel Adı").setFrozen(true);
+        personelGrid.addColumn(Personel::getPersonelSoyadi).setHeader("Personel Soyadı").setFrozen(true);
         personelGrid.addColumn(Personel::getPersonelEmail).setHeader("Personel Email");
         personelGrid.addColumn(Personel::getPersonelDogumTarihi).setHeader("Personel Doğum Tarihi");
         personelGrid.addColumn(Personel::getPersonelPhone).setHeader("Personel Telefon");
@@ -160,7 +168,7 @@ public class PersonelFormView extends VerticalLayout {
                     ButtonVariant.LUMO_TERTIARY);
             button.addClickListener(e -> this.deletePerson(person));
             button.setIcon(new Icon(VaadinIcon.TRASH));
-        })).setHeader("Manage");
+        })).setHeader("Manage").setFrozenToEnd(true);
 
         personelGrid.getColumns().forEach(col -> col.setAutoWidth(true));
         personelGrid.setItems(personelController.findAllPerson());
@@ -190,7 +198,7 @@ public class PersonelFormView extends VerticalLayout {
         findPersonelByKurumTuruList = new ComboBox<>();
         findPersonelByKurumTuruList.setItems(personelKurumTuruController.getPersonelKurumTuruList());
         findPersonelByKurumTuruList.setItemLabelGenerator(PersonelKurumTuru::getKurumTuruAd);
-
+        
         findPersonelByBolumList = new ComboBox<>();
         findPersonelByBolumList.setItems(personelBolumController.getPersonelBolumList());
         findPersonelByBolumList.setItemLabelGenerator(PersonelBolum::getPersonelBolumAdi);
@@ -211,35 +219,43 @@ public class PersonelFormView extends VerticalLayout {
         clearFilterButton = new Button();
         clearFilterButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         clearFilterButton.setIcon(new Icon("lumo", "cross"));
-        clearFilterButton.addClickListener(r -> dataProvider.clearFilters());
+        clearFilterButton.addClickListener(r -> clearFilters());
 
         findPerson.setValueChangeMode(ValueChangeMode.EAGER);
         findPerson.addValueChangeListener(e -> {
-            if (e.getValue() == null) {
-                reloadPersonList();
-            } else {
-                dataProvider.addFilter(p -> p.getPersonelAdi().toLowerCase().contains(e.getValue().toLowerCase())
-                        || p.getPersonelSoyadi().toLowerCase().contains(e.getValue().toLowerCase()));
+            if (!e.getValue().isEmpty() || e.getValue() != null) {
+                dataView.setFilter(p->p.getPersonelAdi().toLowerCase().contains(e.getValue().toLowerCase()));
+                dataView.refreshAll();
             }
         });
 
         findPersonelByKurumTuruList.addValueChangeListener(e -> {
             PersonelKurumTuru selectedKurumTuru = e.getValue();
-            dataProvider.addFilter(p -> selectedKurumTuru == null ? null
-                    : personelKurumTuruController.getPersonelKurumTuruById(p.getPersonelKurum().getKurumTuruId())
-                            .getKurumTuruAd().equals(selectedKurumTuru.getKurumTuruAd()));
+            if(selectedKurumTuru!=null){
+                dataView.setFilter(p->personelKurumTuruController.getPersonelKurumTuruById(p.getPersonelKurum().getKurumTuruId()).getKurumTuruAd().contains(selectedKurumTuru.getKurumTuruAd()));
+                dataView.refreshAll();
+            }
         });
 
         findPersonelByBolumList.addValueChangeListener(e -> {
-            PersonelBolum selectedBolum=e.getValue();
-            dataProvider.addFilter(
-                    p -> p.getPersonelBolum().getPersonelBolumAdi().equals(selectedBolum.getPersonelBolumAdi()));
+            PersonelBolum selectedBolum = e.getValue();
+            if(selectedBolum!=null){
+                dataView.setFilter(p->p.getPersonelBolum().getPersonelBolumAdi().contains(selectedBolum.getPersonelBolumAdi()));
+                dataView.refreshAll();
+            }
         });
 
         gridOperationsLayout.add(findPerson, findPersonelByBolumList, findPersonelByKurumTuruList, clearFilterButton);
         gridOperationsLayout.setDefaultVerticalComponentAlignment(Alignment.END);
 
         return gridOperationsLayout;
+    }
+    
+    private void clearFilters(){
+        dataView.removeFilters();
+        findPerson.clear();
+        findPersonelByBolumList.clear();
+        findPersonelByKurumTuruList.clear();
     }
 
     public void saveUptatedPerson(Personel person) {
@@ -249,6 +265,7 @@ public class PersonelFormView extends VerticalLayout {
                             pe.getPersonelEmail(), pe.getPersonelPhone(), pe.getPersonelDogumTarihi(),
                             pe.getPersonelBolum(), pe.getPersonelKurum()));
             reloadPersonList();
+            clearFilters();
             updateView.close();
         });
     }
@@ -274,8 +291,20 @@ public class PersonelFormView extends VerticalLayout {
     }
 
     private void deletePerson(Personel person) {
-        personelController.delete(person.getPersonelId());
-        reloadPersonList();
+        deleteConfirmView=new DeleteConfirmView("Bu personeli silmek istediğinize emin misiniz?");
+        deleteConfirmView.open();
+        deleteConfirmView.getConfirmButton().addClickListener(e->{
+            try{
+                personelController.delete(person.getPersonelId());
+                reloadPersonList();
+                clearFilters();
+                deleteConfirmView.close();
+            }catch(DataIntegrityViolationException exception){
+                errorDialogView=new ErrorDialogView(exception,"Bu personele ait bir randevu kaydı bulunmaktadır. Lütfen önce personelin randevu kaydını kaldırınız.");
+                errorDialogView.open();
+                deleteConfirmView.close();
+            }
+        });
     }
 
     private void reloadPersonList() {
