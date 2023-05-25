@@ -48,7 +48,7 @@ import com.vaadin.flow.router.Route;
 @Route(value = "", layout = MainLayout.class)
 @Scope("prototype")
 @Uses(Icon.class)
-public class PersonelFormView extends VerticalLayout {
+public class PersonelFormView extends HorizontalLayout {
     private PersonelController personelController;
     private PersonelBolumController personelBolumController;
     private PersonelKurumController personelKurumController;
@@ -120,6 +120,7 @@ public class PersonelFormView extends VerticalLayout {
         personelKurumList.setItemLabelGenerator(PersonelKurum::getKurumAdi);
 
         cancel = new Button("İptal");
+        cancel.addClickListener(e->clearFields());
         save = new Button("Personel Kaydet");
 
         save.addClickListener(e -> addNewPerson());
@@ -137,6 +138,16 @@ public class PersonelFormView extends VerticalLayout {
         HorizontalLayout personOptionsMainLayout = new HorizontalLayout(personOptionsLayout, personOptionsLayout2);
 
         return personOptionsMainLayout;
+    }
+
+    private void clearFields() {
+        personelAdi.clear();
+        personelSoyadi.clear();
+        personelEmail.clear();
+        personelDogumTarihi.clear();
+        personelPhone.clear();
+        personelBolumList.setValue(null);
+        personelKurumList.setValue(null);   
     }
 
     private void addNewPerson() {

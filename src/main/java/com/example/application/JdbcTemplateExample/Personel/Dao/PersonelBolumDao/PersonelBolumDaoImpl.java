@@ -20,20 +20,17 @@ public class PersonelBolumDaoImpl implements PersonelBolumDao {
     }
 
     @Override
-    public void addPersonelBolum(PersonelBolum personelBolum) {
-    }
-
-    @Override
     public List<PersonelBolum> getPersonelBolumList() {
-        String selectQuery="Select pb.bolumId,pb.personelBolumAdi from personelBolum pb;";
-        return namedParameterJdbcTemplate.query(selectQuery,new PersonelBolumRowMapper());
+        String selectQuery = "Select pb.bolumId,pb.personelBolumAdi from personelBolum pb;";
+        return namedParameterJdbcTemplate.query(selectQuery, new PersonelBolumRowMapper());
     }
 
     @Override
     public PersonelBolum getPersonelBolumById(int personelBolumId) {
-        String selectQuery="Select pb.bolumId,pb.personelBolumAdi from personelBolum pb where pb.bolumId="+personelBolumId+";";
-        SqlParameterSource parameterSource=new MapSqlParameterSource().addValue("bolumId", personelBolumId);
-        return namedParameterJdbcTemplate.queryForObject(selectQuery,parameterSource,new PersonelBolumRowMapper());
+        String selectQuery = "Select pb.bolumId,pb.personelBolumAdi from personelBolum pb where pb.bolumId="
+                + personelBolumId + ";";
+        SqlParameterSource parameterSource = new MapSqlParameterSource().addValue("bolumId", personelBolumId);
+        return namedParameterJdbcTemplate.queryForObject(selectQuery, parameterSource, new PersonelBolumRowMapper());
     }
-    
+
 }

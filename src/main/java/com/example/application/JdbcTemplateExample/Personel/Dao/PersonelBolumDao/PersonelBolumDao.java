@@ -5,7 +5,6 @@ import java.util.List;
 import com.example.application.JdbcTemplateExample.Personel.Model.PersonelBolum;
 
 public interface PersonelBolumDao {
-    void addPersonelBolum(PersonelBolum personelBolum);
 
     List<PersonelBolum> getPersonelBolumList();
 

@@ -28,11 +28,6 @@ public class PersonelKurumDaoImpl implements PersonelKurumDao {
     }
 
     @Override
-    public List<PersonelKurum> getKurumListByKurumTuruId(char kurumTuruId) {
-        return null;
-    }
-
-    @Override
     public PersonelKurum getPersonelKurumById(int personelKurumId) {
         String query="Select * from personelKurum pk "+
                     "where pk.kurumId="+personelKurumId+";";

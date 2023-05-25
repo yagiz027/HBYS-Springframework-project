@@ -15,12 +15,6 @@ public class PersonelBolumServiceImpl implements PersonelBolumService {
     private PersonelBolumDao personelBolumDao;
 
     @Override
-    public void addPersonelBolum(PersonelBolum personelBolum) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'addPersonelBolum'");
-    }
-
-    @Override
     public List<PersonelBolum> getPersonelBolumList() {
         return personelBolumDao.getPersonelBolumList();    
     }

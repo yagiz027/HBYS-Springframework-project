@@ -8,7 +8,5 @@ public interface PersonelKurumDao {
 
     List<PersonelKurum> getKurumList();
 
-    List<PersonelKurum> getKurumListByKurumTuruId(char kurumTuruId);
-
     PersonelKurum getPersonelKurumById(int personelKurumId);
 }

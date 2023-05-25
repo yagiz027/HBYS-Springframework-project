@@ -4,12 +4,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Component;
 
 import com.example.application.JdbcTemplateExample.Personel.Model.Personel;
 import com.example.application.JdbcTemplateExample.Personel.Presenter.PersonelPresenter.PersonelService;
 
-@Controller
+@Component
 public class PersonelController {
     @Autowired
     private PersonelService personelService;

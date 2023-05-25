@@ -78,9 +78,9 @@ public class RandevuListView extends VerticalLayout {
         this.personelKurumController = personelKurumController;
         this.personelKurumTuruController = personelKurumTuruController;
 
-        personelList = personelController.findAllPerson();
-        hastaList = hastaController.findAllHasta();
-        randevuList = randevuController.findAllRandevu();
+        personelList = this.personelController.findAllPerson();
+        hastaList = this.hastaController.findAllHasta();
+        randevuList = this.randevuController.findAllRandevu();
 
         randevuGrid.setItems(randevuList);
         dataProvider=(ListDataProvider<Randevu>) randevuGrid.getDataProvider();
