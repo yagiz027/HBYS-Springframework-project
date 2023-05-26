@@ -32,7 +32,7 @@ public class RandevuDaoImpl implements RandevuDao {
         jdbcTemplate.update(query,
                 randevu.getRandevuBaslangicTarih(),
                 randevu.getRandevuBitisTarih(),
-                randevu.getRandevuAlanHastaTC(),
+                randevu.getRandevuAlanHastaTc(),
                 randevu.getRandevuVerenDoktor().getPersonelId(),
                 randevu.getRandevuStatu());
     }

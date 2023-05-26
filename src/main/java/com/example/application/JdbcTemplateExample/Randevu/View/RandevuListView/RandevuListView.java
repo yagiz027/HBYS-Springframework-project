@@ -108,8 +108,8 @@ public class RandevuListView extends VerticalLayout {
         randevuHastaAra.addValueChangeListener(h -> {
             String hastaTempName = h.getValue();
             dataProvider.addFilter(r -> {
-                String hastaFirstName = hastaController.findById(Long.valueOf(r.getRandevuAlanHastaTC())).getHastafirstName();
-                String hastaLastName = hastaController.findById(Long.valueOf(r.getRandevuAlanHastaTC())).getHastaLastName();
+                String hastaFirstName = hastaController.findById(Long.valueOf(r.getRandevuAlanHastaTc())).getHastafirstName();
+                String hastaLastName = hastaController.findById(Long.valueOf(r.getRandevuAlanHastaTc())).getHastaLastName();
                 return hastaFirstName.toLowerCase().contains(hastaTempName.toLowerCase())
                         || hastaLastName.toLowerCase().contains(hastaTempName.toLowerCase());
             });
@@ -122,7 +122,7 @@ public class RandevuListView extends VerticalLayout {
         randevuHastaTCAra.setPlaceholder("Hasta TC Giriniz");
         randevuHastaTCAra.addValueChangeListener(h -> {
             String hastaTc = h.getValue();
-            dataProvider.addFilter(r -> hastaTc==null ? null : r.getRandevuAlanHastaTC().contains(hastaTc));
+            dataProvider.addFilter(r -> hastaTc==null ? null : r.getRandevuAlanHastaTc().contains(hastaTc));
             dataProvider.refreshAll();
         });
 
@@ -201,7 +201,7 @@ public class RandevuListView extends VerticalLayout {
         randevuGrid.setSelectionMode(SelectionMode.SINGLE);
         randevuGrid.addColumn(Randevu::getRandevuId).setHeader("No")
                 .setWidth("2em");
-        randevuGrid.addColumn(Randevu::getRandevuAlanHastaTC).setHeader("Hasta TC");
+        randevuGrid.addColumn(Randevu::getRandevuAlanHastaTc).setHeader("Hasta TC");
         randevuGrid.addColumn(r -> r.getRandevuBaslangicTarih() + "-" + r.getRandevuBitisTarih().getTime())
                 .setHeader("Randevu Tarihi")
                 .setWidth("6em");

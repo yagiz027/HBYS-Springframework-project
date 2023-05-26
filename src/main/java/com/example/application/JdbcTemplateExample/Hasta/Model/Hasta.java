@@ -18,7 +18,7 @@ import lombok.Setter;
 @Setter
 public class Hasta {
     @Id
-    @Column(name = "hastakimlikno")
+    @Column(name = "hastakimlikno", columnDefinition="BIGINT")
     private Long hastakimlikno;
 
     @Column(name = "hastafirstName")

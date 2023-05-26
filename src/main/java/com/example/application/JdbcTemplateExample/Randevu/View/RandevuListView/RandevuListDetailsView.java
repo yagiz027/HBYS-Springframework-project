@@ -67,7 +67,7 @@ public class RandevuListDetailsView extends VerticalLayout{
 
         //Randevu Alan Hasta:
         Hasta hasta=new Hasta();
-        hasta=hastaController.findById(Long.valueOf(randevu.getRandevuAlanHastaTC()));
+        hasta=hastaController.findById(Long.valueOf(randevu.getRandevuAlanHastaTc()));
         //Randevu Alan Hasta Bilgileri:
         hastaTC.setText("Hasta TC :"+hasta.getHastakimlikno().toString());
         hastaName.setText("Hasta Adı Soyadı :"+hasta.getHastafirstName()+" "+hasta.getHastaLastName());

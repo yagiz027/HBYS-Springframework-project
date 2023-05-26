@@ -147,7 +147,7 @@ public class RandevuView extends HorizontalLayout {
         randevuAlanHastaGrid.setItems(hastaList);
         // Grid Columns Configuration
         randevuAlanHastaGrid.setSelectionMode(SelectionMode.MULTI);
-        randevuAlanHastaGrid.addColumn(Hasta::getHastakimlikno).setHeader("Hasta Kimlik NO");
+        randevuAlanHastaGrid.addColumn(Hasta::getHastakimlikno).setHeader("Hasta NO");
         randevuAlanHastaGrid.addColumn(Hasta::getHastafirstName).setHeader("Hasta Adı");
         randevuAlanHastaGrid.addColumn(Hasta::getHastaLastName).setHeader("Hasta Soyadı");
         randevuAlanHastaGrid.addColumn(createToggleHastaDetails(randevuAlanHastaGrid));
@@ -366,6 +366,7 @@ public class RandevuView extends HorizontalLayout {
     }
 
     private static class HastaDetailsForm extends FormLayout {
+        private final TextField hastaTc = new TextField();
         private final TextField hastaTelefon = new TextField();
         private final TextField hastaMail = new TextField();
         private final TextArea hastaAdres = new TextArea();
@@ -377,6 +378,7 @@ public class RandevuView extends HorizontalLayout {
 
         public HastaDetailsForm() {
             Stream.of(
+                    hastaTc,
                     hastaTelefon,
                     hastaMail,
                     hastaEgitim,
@@ -391,6 +393,7 @@ public class RandevuView extends HorizontalLayout {
         }
 
         private void setHasta(Hasta hasta) {
+            hastaTc.setValue("Hasta TC:"+hasta.getHastakimlikno());
             hastaTelefon.setValue("Telefon: " + hasta.getHastaTelefon());
             hastaMail.setValue("E-mail: " + hasta.getHastaEmail());
             hastaAdres.setValue("Adres: " + hasta.getHastaAdres());
@@ -405,10 +408,9 @@ public class RandevuView extends HorizontalLayout {
 
     private void configureRandevuBinder() {
         randevuBinder = new Binder<>(Randevu.class);
+        
 
-        randevuBinder.forField(randevuAlanHastaTcTextField)
-                .asRequired("Lütfen randevusu alınacak hastayı listeden seçiniz")
-                .bind(Randevu::getRandevuAlanHastaTC, Randevu::setRandevuAlanHastaTC);
+        
         randevuBinder.forField(randevuBaslangicTarihDatePicker).asRequired("Lütfen randevu tarihini seçiniz")
                 .withConverter(new LocalDateTimeToDateConverter(ZoneId.systemDefault()))
                 .bind(Randevu::getRandevuBaslangicTarih, Randevu::setRandevuBaslangicTarih);

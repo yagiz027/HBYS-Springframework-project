@@ -19,7 +19,7 @@ public class RandevuRowMapper implements RowMapper<Randevu> {
         randevu.setRandevuId(rs.getLong("randevuId"));
         randevu.setRandevuBaslangicTarih(rs.getTimestamp("randevuBaslangicTarih"));
         randevu.setRandevuBitisTarih(rs.getTimestamp("randevuBitisTarih"));
-        randevu.setRandevuAlanHastaTC(rs.getString("randevuAlanHastaTC"));
+        randevu.setRandevuAlanHastaTc(rs.getString("randevuAlanHastaTC"));
 
         Personel personel = new Personel();
         PersonelBolum personelBolum = new PersonelBolum();

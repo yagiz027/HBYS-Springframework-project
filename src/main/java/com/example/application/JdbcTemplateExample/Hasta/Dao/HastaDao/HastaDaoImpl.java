@@ -172,7 +172,7 @@ public class HastaDaoImpl implements HastaDao {
 
         return namedParameterJdbcTemplate.queryForObject(findQuery, params, new HastaRowMapper());
     }
-
+    
     @Override
     public boolean isUnique(Long hastakimlikno) {
         String query = ""

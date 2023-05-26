@@ -90,7 +90,7 @@ public class RandevuDateSelectionView extends Dialog {
 
     private boolean isSameDaySamePaitient(LocalDate rowDate, String hastaTc) {
         boolean result = randevuList.stream()
-                .filter(r -> r.getRandevuAlanHastaTC() == hastaTc)
+                .filter(r -> r.getRandevuAlanHastaTc() == hastaTc)
                 .filter(r -> DateToLocalDateUtil.convertDateToLocalDate(r.getRandevuBaslangicTarih()) == rowDate)
                 .findAny().isPresent();
         return result;

@@ -311,7 +311,8 @@ public class PersonelFormView extends HorizontalLayout {
                 clearFilters();
                 deleteConfirmView.close();
             }catch(DataIntegrityViolationException exception){
-                errorDialogView=new ErrorDialogView(exception,"Bu personele ait bir randevu kaydı bulunmaktadır. Lütfen önce personelin randevu kaydını kaldırınız.");
+                errorDialogView=new ErrorDialogView(exception,"Bu personele ait bir randevu kaydı bulunmaktadır."
+                                                            +" Lütfen önce personelin randevu kaydını kaldırınız.");
                 errorDialogView.open();
                 deleteConfirmView.close();
             }

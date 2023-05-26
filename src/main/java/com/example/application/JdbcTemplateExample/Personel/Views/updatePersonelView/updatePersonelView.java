@@ -14,11 +14,11 @@ import com.example.application.JdbcTemplateExample.Personel.Model.Personel;
 import com.example.application.JdbcTemplateExample.Personel.Model.PersonelBolum;
 import com.example.application.JdbcTemplateExample.Personel.Model.PersonelKurum;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -72,15 +72,17 @@ public class updatePersonelView extends Dialog {
 
         update = new Button("Update");
         update.setClassName("updateBtn");
+        update.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         update.addClickListener(e -> {
             validateAndUpdatePerson();
         });
 
         cancel = new Button("Cancel");
         cancel.setClassName("updateCancelBtn");
+        cancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY,ButtonVariant.LUMO_ERROR);
         cancel.addClickListener(e -> this.close());
 
-        Footer buttonsFooter = new Footer(update, cancel);
+        HorizontalLayout buttonsFooter = new HorizontalLayout(update, cancel);
 
         HorizontalLayout mainDialogLayout = new HorizontalLayout(dialogDiv1(), dialogDiv2());
 

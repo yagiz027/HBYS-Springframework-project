@@ -1,6 +1,5 @@
 package com.example.application.JdbcTemplateExample.Personel.Controller;
 
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,10 +27,6 @@ public class PersonelController {
 
     public void updatePerson(Personel person){
         personelService.update(person);
-    }
-
-    public void updatePerson(int personId, String firstName, String lastName, String email, String phone,
-            Date dateOfBirth, String occupation) {
     }
 
     public List<Personel> getPersonelByKurumTuru(String kurumTuru){
