@@ -196,7 +196,7 @@ public class PersonelFormView extends HorizontalLayout {
 
                 updateView.open();
 
-                saveUptatedPerson(personel);
+                saveUptatedPersonel(personel);
             }
         });
 
@@ -243,7 +243,9 @@ public class PersonelFormView extends HorizontalLayout {
         findPersonelByKurumTuruList.addValueChangeListener(e -> {
             PersonelKurumTuru selectedKurumTuru = e.getValue();
             if(selectedKurumTuru!=null){
-                dataView.setFilter(p->personelKurumTuruController.getPersonelKurumTuruById(p.getPersonelKurum().getKurumTuruId()).getKurumTuruAd().contains(selectedKurumTuru.getKurumTuruAd()));
+                dataView.setFilter(p->personelKurumTuruController.getPersonelKurumTuruById(
+                    p.getPersonelKurum().getKurumTuruId()).getKurumTuruAd()
+                    .contains(selectedKurumTuru.getKurumTuruAd()));
                 dataView.refreshAll();
             }
         });
@@ -251,7 +253,8 @@ public class PersonelFormView extends HorizontalLayout {
         findPersonelByBolumList.addValueChangeListener(e -> {
             PersonelBolum selectedBolum = e.getValue();
             if(selectedBolum!=null){
-                dataView.setFilter(p->p.getPersonelBolum().getPersonelBolumAdi().contains(selectedBolum.getPersonelBolumAdi()));
+                dataView.setFilter(p->p.getPersonelBolum().getPersonelBolumAdi()
+                .contains(selectedBolum.getPersonelBolumAdi()));
                 dataView.refreshAll();
             }
         });
@@ -269,7 +272,7 @@ public class PersonelFormView extends HorizontalLayout {
         findPersonelByKurumTuruList.clear();
     }
 
-    public void saveUptatedPerson(Personel person) {
+    public void saveUptatedPersonel(Personel person) {
         updateView.updatePersonConsumer(pe -> {
             personelController
                     .updatePerson(new Personel(pe.getPersonelId(), pe.getPersonelAdi(), pe.getPersonelSoyadi(),

@@ -3,7 +3,11 @@ package com.example.application.JdbcTemplateExample.Randevu.View.RandevuListView
 import java.util.List;
 import java.util.function.Consumer;
 
+import org.springframework.dao.DataIntegrityViolationException;
+
 import com.example.application.JdbcTemplateExample.MainLayout;
+import com.example.application.JdbcTemplateExample.GenericViews.DeleteDataConfirmView.DeleteConfirmView;
+import com.example.application.JdbcTemplateExample.GenericViews.ErrorDialog.ErrorDialogView;
 import com.example.application.JdbcTemplateExample.Hasta.Controller.HastaController;
 import com.example.application.JdbcTemplateExample.Hasta.Model.Hasta;
 import com.example.application.JdbcTemplateExample.Personel.Controller.PersonelBolumController;
@@ -16,15 +20,25 @@ import com.example.application.JdbcTemplateExample.Personel.Model.PersonelKurum;
 import com.example.application.JdbcTemplateExample.Personel.Model.PersonelKurumTuru;
 import com.example.application.JdbcTemplateExample.Randevu.Controller.RandevuController;
 import com.example.application.JdbcTemplateExample.Randevu.Model.Randevu;
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.Grid.SelectionMode;
+import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Section;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.orderedlayout.Scroller.ScrollDirection;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -33,7 +47,7 @@ import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.Route;
 
 @Route(value = "randevu-list", layout = MainLayout.class)
-public class RandevuListView extends VerticalLayout {
+public class RandevuListView extends HorizontalLayout {
 
     private Grid<Randevu> randevuGrid = new Grid<>(Randevu.class, false);
     private TextField randevuHastaTCAra;
@@ -59,14 +73,17 @@ public class RandevuListView extends VerticalLayout {
     private Randevu randevu;
     private RandevuListDetailsView randevuListDetailsView;
 
-    private HorizontalLayout randevuListViewMainLayout = new HorizontalLayout();
-    private VerticalLayout detailsLayout = new VerticalLayout();
+    private VerticalLayout randevuListViewMainLayout = new VerticalLayout();
+    private VerticalLayout detailsLayoutBody = new VerticalLayout();
     private VerticalLayout gridAndSearchBarLayout = new VerticalLayout();
     private VerticalLayout randevuKurumTuruCheckBoxGroupLayout = new VerticalLayout();
     private VerticalLayout randevuHastaAraLayout = new VerticalLayout();
     private VerticalLayout randevuKurumBolumAraLayout = new VerticalLayout();
+    private Div detailsContainer=new Div();
 
     private ListDataProvider<Randevu> dataProvider;
+    private DeleteConfirmView deleteConfirmView;
+    private ErrorDialogView errorDialogView;
 
     public RandevuListView(PersonelController personelController, RandevuController randevuController,
             HastaController hastaController, PersonelBolumController personelBolumController,
@@ -77,6 +94,7 @@ public class RandevuListView extends VerticalLayout {
         this.personelBolumController = personelBolumController;
         this.personelKurumController = personelKurumController;
         this.personelKurumTuruController = personelKurumTuruController;
+        detailsLayoutBody.getStyle().set("border", "3px solid black");
 
         personelList = this.personelController.findAllPerson();
         hastaList = this.hastaController.findAllHasta();
@@ -91,13 +109,13 @@ public class RandevuListView extends VerticalLayout {
     }
 
     private void buildMainVerticalLayout() {
-        randevuListViewMainLayout.add(buildRandevuGridAndsSearchBar(), detailsLayout);
+        randevuListViewMainLayout.add(buildRandevuGridAndsSearchBar());
         randevuListViewMainLayout.setPadding(false);
         randevuListViewMainLayout.setSpacing(false);
         randevuListViewMainLayout.setHeightFull();
         randevuListViewMainLayout.setWidthFull();
 
-        add(randevuListViewMainLayout);
+        add(randevuListViewMainLayout,buildDetailsSideContainer());
     }
 
     private HorizontalLayout buildGridSearchBarLayout() {
@@ -209,16 +227,17 @@ public class RandevuListView extends VerticalLayout {
                 .setHeader("Bölüm");
         randevuGrid.asSingleSelect().addValueChangeListener(randevu -> {
             if (randevu != null) {
-                detailsLayout.removeAll();
+                detailsLayoutBody.removeAll();
                 randevuListDetailsView = new RandevuListDetailsView(randevu.getValue(), hastaController);
-                detailsLayout.setSpacing(false);
-                detailsLayout.add(randevuListDetailsView);
+                detailsLayoutBody.add(randevuListDetailsView);
             }
         });
         randevuGrid.addColumn(new ComponentRenderer<>(Button::new, (button, randevu) -> {
             button.addThemeVariants(ButtonVariant.LUMO_ICON, ButtonVariant.LUMO_ERROR, ButtonVariant.LUMO_TERTIARY);
-            button.setIcon(new Icon(VaadinIcon.TRASH));
+            button.setIcon(new Icon(VaadinIcon.TRASH)); 
             button.addClickListener(r -> {
+                deleteRandevu(randevu);
+                reloadRandevuList();
             });
         }));
         randevuGrid.setWidth("100%");
@@ -228,6 +247,68 @@ public class RandevuListView extends VerticalLayout {
         gridAndSearchBarLayout.setPadding(false);
 
         return gridAndSearchBarLayout;
+    }
+
+    private void deleteRandevu(Randevu randevu) {
+        deleteConfirmView=new DeleteConfirmView("Bu hastayı silmek istediğinize emin misiniz?");
+        deleteConfirmView.open();
+        deleteConfirmView.getConfirmButton().addClickListener(e->{
+            try{
+                randevuController.deleteRandevu(randevu);
+                clearFields();
+                deleteConfirmView.close();
+            }catch(DataIntegrityViolationException exception){
+                errorDialogView=new ErrorDialogView(exception,"Bu hastaya ait aktif bir randevu bulunuyor lütfen önce randevu işlemini sonlandırınız.");
+                errorDialogView.open();
+                deleteConfirmView.close();
+            }
+        });
+    }
+
+    private void reloadRandevuList() {
+        randevuGrid.setItems(randevuController.findAllRandevu());
+    }
+    private Div buildDetailsSideContainer(){
+        Header header = new Header();
+        header.getStyle().set("align-items", "center")
+                .set("border-bottom", "1px solid var(--lumo-contrast-20pct)")
+                .set("display", "flex").set("padding", "var(--lumo-space-m)");
+
+        H2 detailsLayoutTitle = new H2("Başvuru Bilgileri");
+        detailsLayoutTitle.getStyle().set("margin", "0");
+
+        Icon arrowLeft = VaadinIcon.ARROW_LEFT.create();
+        arrowLeft.setSize("var(--lumo-icon-size-m)");
+        arrowLeft.getElement().setAttribute("aria-hidden", "true");
+        arrowLeft.getStyle().set("box-sizing", "border-box")
+                .set("margin-right", "var(--lumo-space-m)")
+                .set("padding", "calc(var(--lumo-space-xs) / 2)");
+
+        Anchor goBack = new Anchor("#", arrowLeft);
+
+        header.add(goBack,detailsLayoutTitle);
+        detailsLayoutTitle.getStyle().set("margin-left", "var(--lumo-space-m)");
+        detailsContainer.getStyle().set("border", "1px solid var(--lumo-contrast-20pct)");
+        detailsContainer.getStyle().set("width", "100%");
+
+        //Randevu Information
+
+        Section detailsHeader= new Section(header);
+
+        Section detailsBodySection = new Section(addWithScroller(detailsLayoutBody));
+
+        detailsContainer.add(detailsHeader,detailsBodySection);
+
+        return detailsContainer;
+    }
+
+    private Scroller addWithScroller(Component... childerens){
+        Div container=new Div(childerens);
+        container.setSizeFull();
+        Scroller scroller = new Scroller(container);
+        scroller.setScrollDirection(ScrollDirection.VERTICAL);
+        scroller.setSizeFull();
+        return scroller;
     }
 
     private void clearFields() {

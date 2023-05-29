@@ -5,13 +5,14 @@ import com.example.application.JdbcTemplateExample.Hasta.Model.Hasta;
 import com.example.application.JdbcTemplateExample.Personel.Model.Personel;
 import com.example.application.JdbcTemplateExample.Randevu.Model.Randevu;
 import com.vaadin.flow.component.details.Details;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.Scroller.ScrollDirection;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-public class RandevuListDetailsView extends VerticalLayout{
+public class RandevuListDetailsView extends VerticalLayout {
     private Randevu randevu;
 
     private HastaController hastaController;

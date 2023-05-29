@@ -45,8 +45,8 @@ public class RandevuDaoImpl implements RandevuDao {
 
     @Override
     public void deleteRandevu(Randevu randevu) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'deleteRandevu'");
+        String query= "DELETE FROM hastarandevu h WHERE h.randevuId='"+randevu.getRandevuId()+"';";
+        jdbcTemplate.update(query);
     }
 
     @Override

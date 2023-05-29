@@ -74,7 +74,7 @@ public class updatePersonelView extends Dialog {
         update.setClassName("updateBtn");
         update.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         update.addClickListener(e -> {
-            validateAndUpdatePerson();
+            validateAndUpdatePersonel();
         });
 
         cancel = new Button("Cancel");
@@ -146,7 +146,7 @@ public class updatePersonelView extends Dialog {
                 .bind(Personel::getPersonelKurum,Personel::setPersonelKurum);
     }
 
-    private void validateAndUpdatePerson() {
+    private void validateAndUpdatePersonel() {
         try {
             personUpdateBinder.writeBean(personel);
             updatePersonConsumer.accept(personel);
@@ -163,8 +163,12 @@ public class updatePersonelView extends Dialog {
         personelEmail.setValue(personel.getPersonelEmail());
         personelDogumTarihi.setValue(getPersonelDogumTarihiAsLocalDate());
         personelPhone.setValue(personel.getPersonelPhone());
-        personelBolumList.setValue(personelBolumController.getPersonelBolumById(personel.getPersonelBolum().getBolumId()));
-        personelKurumList.setValue(personelKurumController.getKurumByPersonelKurumId(personel.getPersonelKurum().getKurumId()));
+        personelBolumList.setValue(
+            personelBolumController.getPersonelBolumById(
+                personel.getPersonelBolum().getBolumId()));
+        personelKurumList.setValue(
+            personelKurumController.getKurumByPersonelKurumId(
+                personel.getPersonelKurum().getKurumId()));
     }
 
     private LocalDate getPersonelDogumTarihiAsLocalDate() {
