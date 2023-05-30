@@ -4,9 +4,21 @@ import com.example.application.JdbcTemplateExample.Hasta.Controller.HastaControl
 import com.example.application.JdbcTemplateExample.Hasta.Model.Hasta;
 import com.example.application.JdbcTemplateExample.Personel.Model.Personel;
 import com.example.application.JdbcTemplateExample.Randevu.Model.Randevu;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Unit;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.details.Details;
+import com.vaadin.flow.component.details.DetailsVariant;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Footer;
+import com.vaadin.flow.component.html.H2;
+import com.vaadin.flow.component.html.Header;
+import com.vaadin.flow.component.html.Section;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.Scroller.ScrollDirection;
@@ -35,27 +47,51 @@ public class RandevuListDetailsView extends VerticalLayout {
     private final Span KurumIl=new Span();
     private final Span KurumIlce=new Span();
 
+    private Div detailsContainer=new Div();
+    private HorizontalLayout detailsHeaderLayout=new HorizontalLayout();
+    private HorizontalLayout detailsFooterLayout=new HorizontalLayout();
+    
+    private VerticalLayout detailsMainLayout=new VerticalLayout();
+    
+    private Header header = new Header();
+    private H2 detailsLayoutTitle = new H2();
+    private Section detailsHeader= new Section();
+    private Section detailsBodySection = new Section();
+    private Section detailsFooterSection = new Section();
+    private Footer detailsFooter=new Footer();
+    
+    private Button randevuKabulButton;
+
     public RandevuListDetailsView(Randevu randevu, HastaController hastaController) {
         this.hastaController=hastaController;
         this.randevu=randevu;
         
-        this.getStyle().set("padding","20px");
+        this.getStyle().set("padding","10px");
         this.getStyle().set("spacing", "10px");
+        this.setWidth(400, Unit.PIXELS);
+        this.setHeight(400, Unit.PIXELS);
         this.setHeightFull();
         this.setWidthFull();
         
-        buildDetailsMainLayout();
+       add(buildDetailsMainLayout());
     }
 
-    private void buildDetailsMainLayout(){
-        VerticalLayout mainLayout=new VerticalLayout();
-        mainLayout.add(buildHastaDetails(),buildPersonelDetails());
-        mainLayout.setPadding(false);
-        mainLayout.setSpacing(false);
-        Scroller scroller=new Scroller(mainLayout);        
-        scroller.setScrollDirection(ScrollDirection.VERTICAL);
-        
-        add(mainLayout,scroller);
+    private VerticalLayout buildDetailsMainLayout(){
+        VerticalLayout detailsMainLayout=new VerticalLayout();
+        detailsMainLayout.setSpacing(false);
+        detailsMainLayout.setPadding(false);
+        detailsMainLayout.setWidthFull();
+        detailsMainLayout.setHeightFull();
+        detailsMainLayout.getStyle().set("background-color", "white");
+        detailsMainLayout.getStyle().set("border-radius", "10px");
+        detailsMainLayout.getStyle().set("box-shadow", "0px 0px 10px 0px rgba(0, 0, 0, 0.2)");
+        detailsMainLayout.getStyle().set("box-sizing", "border-box");
+        detailsMainLayout.getStyle().set("padding", "10px");
+        detailsMainLayout.getStyle().set("margin", "10px");
+        detailsMainLayout.getStyle().set("padding", "10px").set("spacing", "10px");
+
+        detailsMainLayout.add(buildDetailsHeader(),addWithScroller(buildDetailsBody()),buildDetailsFooter());
+        return detailsMainLayout;
     }
 
     private Details buildHastaDetails(){
@@ -88,6 +124,7 @@ public class RandevuListDetailsView extends VerticalLayout {
 
         Details hastaDetails=new Details("Hasta Bilgiler :");
         hastaDetails.setContent(hastaDetailsHorizontalLayout);
+        hastaDetails.addThemeVariants(DetailsVariant.REVERSE);
         hastaDetails.setOpened(false);
 
         return hastaDetails;
@@ -121,6 +158,7 @@ public class RandevuListDetailsView extends VerticalLayout {
         personelDetailsVerticalLayout2.add(KurumAdı,KurumTuru,KurumIl,KurumIlce);
         Details kurumDetails=new Details("Kurum Bilgileri:");
         kurumDetails.setContent(personelDetailsVerticalLayout2);
+        kurumDetails.addThemeVariants(DetailsVariant.REVERSE);
         kurumDetails.setOpened(false);
 
         personelDetailsVerticalLayout.add(personelName,personelTel,personelEmail,personelBolum);
@@ -132,7 +170,71 @@ public class RandevuListDetailsView extends VerticalLayout {
 
         Details personelDetails=new Details("Personel Bilgileri:");
         personelDetails.setContent(personelDetailsMainLayout);
+        personelDetails.addThemeVariants(DetailsVariant.REVERSE);
 
         return personelDetails;
     }
+
+    private HorizontalLayout buildDetailsHeader(){
+        header.getStyle().set("align-items", "center")
+                .set("border-bottom", "1px solid var(--lumo-contrast-20pct)")
+                .set("display", "flex").set("padding", "var(--lumo-space-m)");
+
+        detailsLayoutTitle.setText("Başvuru Bilgileri");
+        detailsLayoutTitle.getStyle().set("margin", "0");
+
+        Icon arrowLeft = VaadinIcon.ARROW_LEFT.create();
+        arrowLeft.setSize("var(--lumo-icon-size-m)");
+        arrowLeft.getElement().setAttribute("aria-hidden", "true");
+        arrowLeft.getStyle().set("box-sizing", "border-box")
+                .set("margin-right", "var(--lumo-space-m)")
+                .set("padding", "calc(var(--lumo-space-xs) / 2)");
+
+        Anchor goBack = new Anchor("#", arrowLeft);
+
+        header.add(goBack,detailsLayoutTitle);
+
+        detailsHeaderLayout.add(header);
+
+        return detailsHeaderLayout;
+    }
+
+    private Div buildDetailsBody(){
+        detailsContainer.add(buildHastaDetails(),buildPersonelDetails());
+        detailsContainer.getStyle().set("spacing", "0px");
+        detailsContainer.getStyle().set("padding", "0px");
+        detailsContainer.setSizeFull();
+        detailsContainer.getStyle().set("overflow", "bottom");
+        detailsContainer.getStyle().set("align-items", "stretch");
+
+        return detailsContainer;
+    }
+
+    private HorizontalLayout buildDetailsFooter(){
+        detailsFooter.getStyle().set("align-items", "center");
+
+        randevuKabulButton=new Button("Randevu Kabul");
+        randevuKabulButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
+        detailsFooter.add(randevuKabulButton);
+
+        detailsFooterLayout.add(detailsFooter);
+        
+        return detailsFooterLayout;
+    }
+
+    private Scroller addWithScroller(Component... childerens){
+        Div detailsDiv=new Div(childerens);
+        detailsDiv.setSizeFull();
+        detailsDiv.getStyle().set("align-items", "stretch").set("padding", "false");
+        
+        Scroller scroller = new Scroller(detailsDiv);
+        scroller.setScrollDirection(ScrollDirection.VERTICAL);
+        scroller.getStyle()
+            .set("border-bottom", "1px solid var(--lumo-contrast-20pct)");
+        scroller.setHeight("280px");
+        scroller.setWidth("350px");
+        return scroller;
+    }
+
 }

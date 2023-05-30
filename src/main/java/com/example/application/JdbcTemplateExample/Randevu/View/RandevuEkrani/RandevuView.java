@@ -409,8 +409,8 @@ public class RandevuView extends HorizontalLayout {
     private void configureRandevuBinder() {
         randevuBinder = new Binder<>(Randevu.class);
         
-
-        
+        randevuBinder.forField(randevuAlanHastaTcTextField).asRequired("Lütfen listeden bir hasta seçiniz")
+                .bind(Randevu::getRandevuAlanHastaTc,Randevu::setRandevuAlanHastaTc);
         randevuBinder.forField(randevuBaslangicTarihDatePicker).asRequired("Lütfen randevu tarihini seçiniz")
                 .withConverter(new LocalDateTimeToDateConverter(ZoneId.systemDefault()))
                 .bind(Randevu::getRandevuBaslangicTarih, Randevu::setRandevuBaslangicTarih);
