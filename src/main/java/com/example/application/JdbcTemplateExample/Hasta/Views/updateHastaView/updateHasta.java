@@ -12,6 +12,7 @@ import com.example.application.JdbcTemplateExample.Hasta.Controller.HastaKanGrup
 import com.example.application.JdbcTemplateExample.Hasta.Model.Hasta;
 import com.example.application.JdbcTemplateExample.Hasta.Model.HastaKanGrup;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -113,15 +114,20 @@ public class updateHasta extends Dialog {
         H1 gridTitle = new H1("Hasta Güncelle");
         gridTitle.setClassName("updateDialogTitle");
 
+        HorizontalLayout buttonsLayout=new HorizontalLayout();
         updateHastaButton = new Button("Güncelle");
         updateHastaButton.setClassName("updateButton");
+        updateHastaButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         updateHastaButton.addClickListener(e -> validateAndUpdateHasta());
 
         cancelUpdateButton = new Button("İptal");
         cancelUpdateButton.setClassName("cancelButton");
+        cancelUpdateButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY,ButtonVariant.LUMO_ERROR);
         cancelUpdateButton.addClickListener(e -> this.close());
 
-        add(gridTitle, gridMainLayout, updateHastaButton, cancelUpdateButton);
+        buttonsLayout.add(updateHastaButton,cancelUpdateButton);
+
+        add(gridTitle, gridMainLayout,buttonsLayout);
     }
 
     public Div updateGrid2() {

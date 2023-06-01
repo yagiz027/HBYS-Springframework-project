@@ -134,9 +134,6 @@ public class RandevuListDetailsView extends VerticalLayout {
         VerticalLayout personelDetailsVerticalLayout=new VerticalLayout();
         personelDetailsVerticalLayout.setSpacing(false);
         personelDetailsVerticalLayout.setPadding(false);
-        VerticalLayout personelDetailsVerticalLayout2=new VerticalLayout();
-        personelDetailsVerticalLayout2.setSpacing(false);
-        personelDetailsVerticalLayout2.setPadding(false);
 
         //Randevu Alınan Personel:
         Personel personel=new Personel();
@@ -148,6 +145,32 @@ public class RandevuListDetailsView extends VerticalLayout {
         personelEmail.setText("Doktor Email :"+personel.getPersonelEmail());
         personelBolum.setText("Bölüm :"+personel.getPersonelBolum().getPersonelBolumAdi());
 
+        personelDetailsVerticalLayout.add(personelName,personelTel,personelEmail,personelBolum);
+
+        VerticalLayout personelDetailsMainLayout=new VerticalLayout();
+        personelDetailsMainLayout.setSpacing(false);
+        personelDetailsMainLayout.setPadding(false);
+        personelDetailsMainLayout.add(personelDetailsVerticalLayout);
+
+        Details personelDetails=new Details("Personel Bilgileri:");
+        personelDetails.setContent(personelDetailsMainLayout);
+        personelDetails.addThemeVariants(DetailsVariant.REVERSE);
+
+        return personelDetails;
+    }
+    private Details buildKurumDetails(){
+        Personel personel=new Personel();
+        personel=randevu.getRandevuVerenDoktor();
+
+        VerticalLayout kurumDetailsLayout=new VerticalLayout();
+        kurumDetailsLayout.setSpacing(false);
+        kurumDetailsLayout.setPadding(false);
+
+        Details kurumDetails=new Details("Kurum Bilgileri:");
+        kurumDetails.setContent(kurumDetailsLayout);
+        kurumDetails.addThemeVariants(DetailsVariant.REVERSE);
+        kurumDetails.setOpened(false);
+
         //Personel Kurum Bilgileri:
         KurumAdı.setText("Kurum Adı :"+personel.getPersonelKurum().getKurumAdi());
         KurumTuru.setText("Kurum Türü :"+personel.getPersonelKurum().getKurumTuruId());
@@ -155,24 +178,13 @@ public class RandevuListDetailsView extends VerticalLayout {
         KurumIlce.setText("Kurum İlçe :"+personel.getPersonelKurum().getKurumilce());
 
         //Kurum Bilgileri Details:
-        personelDetailsVerticalLayout2.add(KurumAdı,KurumTuru,KurumIl,KurumIlce);
-        Details kurumDetails=new Details("Kurum Bilgileri:");
-        kurumDetails.setContent(personelDetailsVerticalLayout2);
-        kurumDetails.addThemeVariants(DetailsVariant.REVERSE);
-        kurumDetails.setOpened(false);
+        kurumDetailsLayout.add(KurumAdı,KurumTuru,KurumIl,KurumIlce);
 
-        personelDetailsVerticalLayout.add(personelName,personelTel,personelEmail,personelBolum);
+        return kurumDetails;
+    }
 
-        VerticalLayout personelDetailsMainLayout=new VerticalLayout();
-        personelDetailsMainLayout.setSpacing(false);
-        personelDetailsMainLayout.setPadding(false);
-        personelDetailsMainLayout.add(personelDetailsVerticalLayout,kurumDetails);
-
-        Details personelDetails=new Details("Personel Bilgileri:");
-        personelDetails.setContent(personelDetailsMainLayout);
-        personelDetails.addThemeVariants(DetailsVariant.REVERSE);
-
-        return personelDetails;
+    private Details buildRandevuDuzenleDetails(){
+        return null;
     }
 
     private HorizontalLayout buildDetailsHeader(){
@@ -200,7 +212,7 @@ public class RandevuListDetailsView extends VerticalLayout {
     }
 
     private Div buildDetailsBody(){
-        detailsContainer.add(buildHastaDetails(),buildPersonelDetails());
+        detailsContainer.add(buildHastaDetails(),buildPersonelDetails(),buildKurumDetails());
         detailsContainer.getStyle().set("spacing", "0px");
         detailsContainer.getStyle().set("padding", "0px");
         detailsContainer.setSizeFull();

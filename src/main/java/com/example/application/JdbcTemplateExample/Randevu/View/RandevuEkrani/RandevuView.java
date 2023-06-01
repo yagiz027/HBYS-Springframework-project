@@ -49,7 +49,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
 @Route(value = "hasta-randevu", layout = MainLayout.class)
-@PageTitle("Randevu Kontrol Ekranı")
+@PageTitle("Randevu Ekleme Ekranı")
 @Scope("prototype")
 public class RandevuView extends HorizontalLayout {
 

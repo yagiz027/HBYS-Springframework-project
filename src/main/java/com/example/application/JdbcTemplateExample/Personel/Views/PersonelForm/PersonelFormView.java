@@ -36,7 +36,6 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
-import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.LocalDateToDateConverter;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.data.value.ValueChangeMode;
@@ -123,7 +122,10 @@ public class PersonelFormView extends HorizontalLayout {
         cancel.addClickListener(e->clearFields());
         save = new Button("Personel Kaydet");
 
-        save.addClickListener(e -> addNewPerson());
+        save.addClickListener(e -> {
+            addNewPerson();
+            clearFields();
+        });
         save.addClickShortcut(com.vaadin.flow.component.Key.ENTER);
 
         HorizontalLayout buttonsLayout = new HorizontalLayout(save, cancel);
@@ -155,8 +157,9 @@ public class PersonelFormView extends HorizontalLayout {
             binder.writeBean(personel);
             personelController.add(personel);
             reloadPersonList();
-        } catch (ValidationException e1) {
-            System.out.println("Error Message:" + e1.getMessage());
+        } catch (Exception exception) {
+            errorDialogView=new ErrorDialogView(exception, "Lütfen tüm alanları eksiksiz bir şekilde doldurduğunuzdan emin olun");
+            errorDialogView.open();
         }
     }
 
@@ -259,6 +262,11 @@ public class PersonelFormView extends HorizontalLayout {
             }
         });
 
+        clearFilterButton.addClickListener(a->{
+            dataView.removeFilters();
+            clearFilters();
+        });
+
         gridOperationsLayout.add(findPerson, findPersonelByBolumList, findPersonelByKurumTuruList, clearFilterButton);
         gridOperationsLayout.setDefaultVerticalComponentAlignment(Alignment.END);
 
@@ -266,7 +274,6 @@ public class PersonelFormView extends HorizontalLayout {
     }
     
     private void clearFilters(){
-        dataView.removeFilters();
         findPerson.clear();
         findPersonelByBolumList.clear();
         findPersonelByKurumTuruList.clear();
@@ -287,20 +294,20 @@ public class PersonelFormView extends HorizontalLayout {
     private void initBinder() {
         binder = new BeanValidationBinder<>(Personel.class);
 
-        binder.forField(personelAdi).asRequired("Bu alan boş olamaz")
+        binder.forField(personelAdi)
                 .bind(Personel::getPersonelAdi, Personel::setPersonelAdi);
-        binder.forField(personelSoyadi).asRequired("Bu alan boş olamaz")
+        binder.forField(personelSoyadi)
                 .bind(Personel::getPersonelSoyadi, Personel::setPersonelSoyadi);
-        binder.forField(personelEmail).asRequired("Bu alan boş olamaz")
+        binder.forField(personelEmail)
                 .bind(Personel::getPersonelEmail, Personel::setPersonelEmail);
-        binder.forField(personelDogumTarihi).asRequired("Bu alan boş olamaz")
+        binder.forField(personelDogumTarihi)
                 .withConverter(new LocalDateToDateConverter(ZoneId.systemDefault()))
                 .bind(Personel::getPersonelDogumTarihi, Personel::setPersonelDogumTarihi);
-        binder.forField(personelPhone).asRequired("Bu alan boş olamaz")
+        binder.forField(personelPhone)
                 .bind(Personel::getPersonelPhone, Personel::setPersonelPhone);
-        binder.forField(personelBolumList).asRequired("Bu alan boş olanaz")
+        binder.forField(personelBolumList)
                 .bind(Personel::getPersonelBolum, Personel::setPersonelBolum);
-        binder.forField(personelKurumList).asRequired("Lütfen personel kurumu seçiniz.")
+        binder.forField(personelKurumList)
                 .bind(Personel::getPersonelKurum, Personel::setPersonelKurum);
     }
 

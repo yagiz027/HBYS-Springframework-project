@@ -70,14 +70,14 @@ public class updatePersonelView extends Dialog {
         header.setClassName("personelUpdateDialogHeader");
         header.setText("Personel Güncelle");
 
-        update = new Button("Update");
+        update = new Button("Güncelle");
         update.setClassName("updateBtn");
         update.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         update.addClickListener(e -> {
             validateAndUpdatePersonel();
         });
 
-        cancel = new Button("Cancel");
+        cancel = new Button("İptal");
         cancel.setClassName("updateCancelBtn");
         cancel.addThemeVariants(ButtonVariant.LUMO_PRIMARY,ButtonVariant.LUMO_ERROR);
         cancel.addClickListener(e -> this.close());
