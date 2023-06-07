@@ -2,6 +2,7 @@ package com.example.application.JdbcTemplateExample.Randevu.View.RandevuListView
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -36,6 +37,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.splitlayout.SplitLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.ListDataProvider;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
@@ -123,12 +125,15 @@ public class RandevuListView extends HorizontalLayout {
         randevuListViewMainLayout.setWidth("100%");
         randevuListViewMainLayout.setHeight("100%");
 
+        SplitLayout mainSplitLayout=new SplitLayout(randevuListViewMainLayout,detailsVerticalLayout);
+        mainSplitLayout.setHeightFull();
+        mainSplitLayout.setWidthFull();
         detailsVerticalLayout.setHeight("500px");
         detailsVerticalLayout.getStyle().set("flex", "1 1 30%");
         detailsVerticalLayout.setPadding(false);
         detailsVerticalLayout.setSpacing(false);
 
-        add(randevuListViewMainLayout, detailsVerticalLayout);
+        add(mainSplitLayout);
     }
 
     private HorizontalLayout buildGridSearchBarLayout() {
@@ -177,10 +182,14 @@ public class RandevuListView extends HorizontalLayout {
         randevuKurumAra.setSizeFull();
         randevuKurumAra.setItemLabelGenerator(PersonelKurum::getKurumAdi);
         randevuKurumAra.setItems(personelKurumController.getPersonelKurumList());
+
         randevuKurumAra.addValueChangeListener(k -> {
             PersonelKurum selectedKurum = k.getValue();
+            if(selectedKurum==null){
+                
+            }
             dataProvider.addFilter(r -> r.getRandevuVerenDoktor().getPersonelKurum().getKurumAdi()
-                    .contains(selectedKurum != null ? selectedKurum.getKurumAdi() : null));
+                .contains(selectedKurum != null ? selectedKurum.getKurumAdi() : null));
             dataProvider.refreshAll();
         });
 
@@ -237,7 +246,8 @@ public class RandevuListView extends HorizontalLayout {
         HorizontalLayout gridAboveLayout = new HorizontalLayout(randevuKurumTuruCheckBoxGroupLayout,
                 randevuHastaAraLayout, randevuKurumBolumAraLayout, clearFiltersButton);
         gridAboveLayout.setAlignItems(Alignment.CENTER);
-        gridAboveLayout.setHeight("100px");
+        gridAboveLayout.setHeightFull();
+        gridAboveLayout.setWidthFull();
         gridAboveLayout.setSpacing(false);
         gridAboveLayout.getStyle().set("padding", "10px");
         return gridAboveLayout;
@@ -279,10 +289,10 @@ public class RandevuListView extends HorizontalLayout {
         randevuGrid.setRowsDraggable(true);
         gridAndSearchBarLayout.add(buildGridSearchBarLayout(), buildRandevuTarihAralikLayout(), randevuGrid);
         gridAndSearchBarLayout.getStyle().set("flex", "1 1 70%");
-        gridAndSearchBarLayout.getStyle().set("box-shadow", "0px 0px 10px 0px rgba(0, 0, 0, 0.2)");
-        gridAndSearchBarLayout.getStyle().set("border-radius", "10px");
+        
+        gridAndSearchBarLayout.getStyle().set("border", "1px solid var(--lumo-contrast-20pct)");
         gridAndSearchBarLayout.getStyle().set("spacing", "10px");
-        gridAndSearchBarLayout.setWidth(1075, Unit.PIXELS);
+        gridAndSearchBarLayout.setWidthFull();
         gridAndSearchBarLayout.setHeightFull();
         gridAndSearchBarLayout.setSpacing(false);
         gridAndSearchBarLayout.setPadding(false);

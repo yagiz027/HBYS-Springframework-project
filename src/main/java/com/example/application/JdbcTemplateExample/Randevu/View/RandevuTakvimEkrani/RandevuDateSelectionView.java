@@ -72,7 +72,7 @@ public class RandevuDateSelectionView extends Dialog {
             LocalDateTime clickedStartDateTime = randevuTakvimView.getClickedStartDateTime();
             LocalDateTime clickedEndDateTime = randevuTakvimView.getClickedEndDateTime();
 
-            if (isSameDaySamePaitient(clickedStartDateTime.toLocalDate(), selectedHastaTc)) {
+            if (isSameDaySamePaitient(clickedStartDateTime.toLocalDate(), selectedHastaTc)==true) {
                 errorDialogView = new ErrorDialogView(new Exception(),
                         "Aynı gün içerisinde yalnızca bir randevu alabilirsiniz.");
             } else {
@@ -92,7 +92,7 @@ public class RandevuDateSelectionView extends Dialog {
         boolean result = randevuList.stream()
                 .filter(r -> r.getRandevuAlanHastaTc() == hastaTc)
                 .filter(r -> DateToLocalDateUtil.convertDateToLocalDate(r.getRandevuBaslangicTarih()) == rowDate)
-                .findAny().isPresent();
+                .findAny().isPresent(); 
         return result;
     }
 }

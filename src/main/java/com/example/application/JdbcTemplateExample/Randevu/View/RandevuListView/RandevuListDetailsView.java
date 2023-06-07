@@ -1,5 +1,7 @@
 package com.example.application.JdbcTemplateExample.Randevu.View.RandevuListView;
 
+import org.atmosphere.config.service.Heartbeat;
+
 import com.example.application.JdbcTemplateExample.Hasta.Controller.HastaController;
 import com.example.application.JdbcTemplateExample.Hasta.Model.Hasta;
 import com.example.application.JdbcTemplateExample.Personel.Model.Personel;
@@ -183,10 +185,6 @@ public class RandevuListDetailsView extends VerticalLayout {
         return kurumDetails;
     }
 
-    private Details buildRandevuDuzenleDetails(){
-        return null;
-    }
-
     private HorizontalLayout buildDetailsHeader(){
         header.getStyle().set("align-items", "center")
                 .set("border-bottom", "1px solid var(--lumo-contrast-20pct)")
@@ -205,8 +203,10 @@ public class RandevuListDetailsView extends VerticalLayout {
         Anchor goBack = new Anchor("#", arrowLeft);
 
         header.add(goBack,detailsLayoutTitle);
+        header.setWidthFull();
 
         detailsHeaderLayout.add(header);
+        detailsHeaderLayout.setWidthFull();
 
         return detailsHeaderLayout;
     }
@@ -244,8 +244,8 @@ public class RandevuListDetailsView extends VerticalLayout {
         scroller.setScrollDirection(ScrollDirection.VERTICAL);
         scroller.getStyle()
             .set("border-bottom", "1px solid var(--lumo-contrast-20pct)");
-        scroller.setHeight("280px");
-        scroller.setWidth("350px");
+        scroller.setHeightFull();
+        scroller.setWidthFull();
         return scroller;
     }
 
